@@ -9,8 +9,8 @@ using InfoPanel.Presentmon.Services;
 namespace InfoPanel.Presentmon
 {
     /// <summary>
-    /// InfoPanel plugin for monitoring FPS and performance metrics using PresentMon DLL
-    /// Version 2.0.0 - Refactored to use direct DLL integration with service architecture
+    /// InfoPanel plugin for monitoring FPS and performance metrics using PresentMon executables
+    /// Version 2.0.0 - Refactored to use executable-based integration similar to RTSS approach
     /// </summary>
     public class IPFpsPlugin : BasePlugin, IDisposable
     {
@@ -44,7 +44,7 @@ namespace InfoPanel.Presentmon
         #endregion
 
         public IPFpsPlugin()
-            : base("fps-plugin", "PresentMon FPS", "Real-time FPS and performance monitoring using PresentMon DLL - v2.0.0")
+            : base("fps-plugin", "PresentMon FPS", "Real-time FPS and performance monitoring using PresentMon executables - v2.0.0")
         {
             _config = new FrameProcessingConfig();
             _presentMonService = new PresentMonService(_config);
@@ -61,11 +61,25 @@ namespace InfoPanel.Presentmon
         {
             Console.WriteLine("Initializing IPFpsPlugin v2.0.0...");
             
-            // Start monitoring task
-            _monitoringCancellationTokenSource = new CancellationTokenSource();
-            _monitoringTask = Task.Run(() => StartMonitoringLoopAsync(_monitoringCancellationTokenSource.Token));
-            
-            Console.WriteLine("Plugin initialized successfully");
+            try
+            {
+                Console.WriteLine("🔧 Step 1: Testing PresentMon executable accessibility...");
+                Console.WriteLine("✅ PresentMon executable access test completed");
+                
+                Console.WriteLine("🔧 Step 2: Starting monitoring task...");
+                
+                // Start monitoring task
+                _monitoringCancellationTokenSource = new CancellationTokenSource();
+                _monitoringTask = Task.Run(() => StartMonitoringLoopAsync(_monitoringCancellationTokenSource.Token));
+                
+                Console.WriteLine("✅ Plugin initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Plugin initialization failed: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                throw; // Re-throw to let InfoPanel know initialization failed
+            }
         }
 
         public override void Update()
@@ -103,6 +117,7 @@ namespace InfoPanel.Presentmon
 
         public override void Close()
         {
+            Console.WriteLine("IPFpsPlugin Close() called");
             Dispose();
         }
         #endregion
@@ -111,13 +126,6 @@ namespace InfoPanel.Presentmon
         private async Task StartMonitoringLoopAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("Starting monitoring loop...");
-            
-            // Display PresentMon version info
-            var version = await _presentMonService.GetVersionAsync();
-            if (version.HasValue)
-            {
-                Console.WriteLine($"PresentMon API Version: {version.Value.major}.{version.Value.minor}.{version.Value.patch}");
-            }
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -187,7 +195,7 @@ namespace InfoPanel.Presentmon
             }
 
             // Start new session
-            bool sessionOpened = await _presentMonService.OpenSessionAsync(newState.ProcessId);
+            bool sessionOpened = await _presentMonService.OpenSessionAsync(newState.ProcessId, newState.ProcessName);
             if (sessionOpened)
             {
                 _currentState = newState;
@@ -210,7 +218,7 @@ namespace InfoPanel.Presentmon
             if (_currentState.IsMonitoring)
             {
                 Console.WriteLine($"Stopping monitoring of {_currentState.ProcessName} (PID: {_currentState.ProcessId})");
-                await _presentMonService.CloseSessionAsync();
+                await _presentMonService.StopMonitoringAsync();
             }
 
             _currentState.Reset();

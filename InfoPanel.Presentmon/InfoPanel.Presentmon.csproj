@@ -24,8 +24,8 @@
     <UseAppHost>false</UseAppHost>
     <!-- Don't create platform-specific subfolders -->
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <!-- Disable runtime config generation -->
-    <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
+    <!-- Enable runtime config generation for InfoPanel plugin loading -->
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
 
   <!-- Post-build event commands -->
@@ -47,7 +47,8 @@
       <DirectoriesToDelete Include="$(OutputPath)x86" />
       <FilesToDelete Include="$(OutputPath)*.pdb" Condition="'$(Configuration)' == 'Release'" />
       <FilesToDelete Include="$(OutputPath)*.xml" />
-      <FilesToDelete Include="$(OutputPath)*.json" />
+      <!-- Keep runtimeconfig.json for InfoPanel plugin loading -->
+      <FilesToDelete Include="$(OutputPath)*.deps.json" />
       <FilesToDelete Include="$(OutputPath)System.CodeDom.dll" />
     </ItemGroup>
     
@@ -107,15 +108,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Copy PresentMonAPI2.dll directly to output directory -->
-    <None Update="PresentMonAPI2.dll">
+    <!-- Copy PresentMonDataProvider folder and all its contents -->
+    <None Update="PresentMonDataProvider\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <TargetPath>PresentMonAPI2.dll</TargetPath>
+      <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </None>
     <None Update="PluginInfo.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>PluginInfo.ini</TargetPath>
     </None>
+
   </ItemGroup>
 
 </Project>

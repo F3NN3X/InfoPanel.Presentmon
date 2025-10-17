@@ -18,6 +18,92 @@ namespace InfoPanel.Presentmon.Services
         private const uint WS_CAPTION = 0x00C00000; // Title bar
         private const uint WS_THICKFRAME = 0x00040000; // Resizable border
         private readonly uint _selfPid;
+        
+        // System processes that should be ignored even if they appear fullscreen
+        private readonly string[] _systemProcessBlacklist = new[]
+        {
+            "MicrosoftStartFeedProvider",
+            "TextInputHost",
+            "explorer",
+            "dwm",
+            "winlogon",
+            "csrss",
+            "smss",
+            "wininit",
+            "services",
+            "lsass",
+            "svchost",
+            "taskhost",
+            "taskhostw",
+            "sihost",
+            "StartMenuExperienceHost",
+            "SearchUI",
+            "ShellExperienceHost",
+            "LockApp",
+            "ApplicationFrameHost", // UWP container
+            
+            // PowerToys processes
+            "PowerToys.FancyZones",
+            "PowerToys.ColorPicker",
+            "PowerToys.PowerLauncher",
+            "PowerToys.Awake",
+            "PowerToys.CropAndLock",
+            "PowerToys.FileLocksmith",
+            "PowerToys.ImageResizer",
+            "PowerToys.KeyboardManager",
+            "PowerToys.MeasureTool",
+            "PowerToys.MouseUtils",
+            "PowerToys.Peek",
+            "PowerToys.PowerRename",
+            "PowerToys.QuickAccent",
+            "PowerToys.RegistryPreview",
+            "PowerToys.Run",
+            "PowerToys.ShortcutGuide",
+            "PowerToys.VideoConference",
+            "PowerToys.Workspaces",
+            "PowerToys",
+            
+            // Windows utilities and overlays
+            "Windows.UI.Immersive.dll",
+            "WindowsInternal.ComposableShell.Experiences.TextInput.InputApp",
+            "MicrosoftEdgeWebView2Setup",
+            "SecurityHealthSystray",
+            "SystemSettings",
+            "WinStore.App",
+            "HxOutlook",
+            "HxCalendarAppImm",
+            "Calculator",
+            "ScreenClipping",
+            "ScreenSketch",
+            "PenWorkspace",
+            "GameBarPresenceWriter",
+            "XboxGameBarWidgets",
+            "XboxGameBar",
+            
+            // Antivirus and security overlays
+            "MsMpEng",
+            "SecurityHealthService",
+            "SgrmBroker",
+            "smartscreen",
+            
+            // Graphics driver overlays
+            "nvcontainer",
+            "NVIDIA Share",
+            "NVIDIA GeForce Experience",
+            "RadeonSoftware",
+            "igfxEM",
+            "igfxHK",
+            "igfxTray",
+            
+            // System monitoring and diagnostic tools
+            "perfmon",
+            "taskmgr",
+            "mmc",
+            "eventvwr",
+            "resmon",
+            "msinfo32",
+            "dxdiag"
+        };
 
         public delegate bool EnumWindowsProc(HWND hWnd, IntPtr lParam);
 
@@ -89,6 +175,21 @@ namespace InfoPanel.Presentmon.Services
                         {
                             using var process = Process.GetProcessById((int)processId);
                             string processName = process.ProcessName;
+                            
+                            // Skip system processes that should be ignored
+                            if (Array.Exists(_systemProcessBlacklist, p => 
+                                string.Equals(p, processName, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                Console.WriteLine($"Skipping blacklisted system process: {processName} (PID: {processId})");
+                                return true; // Continue enumeration
+                            }
+                            
+                            // Additional service detection - check for common service characteristics
+                            if (IsLikelySystemService(process, processName))
+                            {
+                                Console.WriteLine($"Skipping detected system service: {processName} (PID: {processId})");
+                                return true; // Continue enumeration
+                            }
                             
                             // Get window title
                             var titleBuilder = new StringBuilder(256);
@@ -207,6 +308,73 @@ namespace InfoPanel.Presentmon.Services
                     return "Unknown";
                 }
             });
+        }
+
+        /// <summary>
+        /// Determines if a process is likely a system service based on various characteristics
+        /// </summary>
+        /// <param name="process">The process to check</param>
+        /// <param name="processName">The process name</param>
+        /// <returns>True if the process appears to be a system service</returns>
+        private static bool IsLikelySystemService(Process process, string processName)
+        {
+            try
+            {
+                // Check for common service naming patterns
+                var servicePrefixes = new[] { "Microsoft", "Windows", "System", "Service", "Host", "Runtime", "Background" };
+                var serviceSuffixes = new[] { "Service", "Host", "Runtime", "Background", "Helper", "Manager", "Agent", "Daemon" };
+                
+                // Check if process name contains service indicators
+                foreach (var prefix in servicePrefixes)
+                {
+                    if (processName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+                
+                foreach (var suffix in serviceSuffixes)
+                {
+                    if (processName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                        return true;
+                }
+                
+                // Check if process runs from system directories
+                try
+                {
+                    string processPath = process.MainModule?.FileName ?? "";
+                    var systemPaths = new[]
+                    {
+                        @"C:\Windows\System32",
+                        @"C:\Windows\SysWOW64", 
+                        @"C:\Program Files\Windows",
+                        @"C:\Program Files (x86)\Windows",
+                        @"C:\Windows\SystemApps",
+                        @"C:\Program Files\WindowsApps"
+                    };
+                    
+                    foreach (var systemPath in systemPaths)
+                    {
+                        if (processPath.StartsWith(systemPath, StringComparison.OrdinalIgnoreCase))
+                            return true;
+                    }
+                }
+                catch
+                {
+                    // Ignore access denied exceptions for system processes
+                }
+                
+                // Check if process has no main window or has invisible window characteristics
+                if (process.MainWindowHandle == IntPtr.Zero && string.IsNullOrEmpty(process.MainWindowTitle))
+                {
+                    return true;
+                }
+                
+                return false;
+            }
+            catch
+            {
+                // If we can't determine, err on the side of caution and don't filter
+                return false;
+            }
         }
     }
 }

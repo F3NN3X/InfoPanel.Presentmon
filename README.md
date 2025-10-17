@@ -28,9 +28,9 @@ Follow these steps to get the InfoPanel Presentmon Plugin working:
    - Simply enable the plugin in InfoPanel's plugin settings.
 
 4. **Start Monitoring**:
-   - Launch InfoPanel and the plugin will automatically start.
-   - Open any fullscreen application (game, video, etc.).
-   - Real-time FPS and performance metrics will appear in InfoPanel.
+   - Launch InfoPanel 
+   - Open any fullscreen application (game, video, etc.)
+   - Real-time FPS and performance metrics will appear in InfoPanel
 
 > **Note**: Version 2.0.0+ no longer requires separate PresentMon executable files. All functionality is integrated directly into the plugin.
 
@@ -46,15 +46,12 @@ If the plugin isn't working as expected, check the InfoPanel logs or console out
   - Check that the application is using DirectX, Vulkan, or OpenGL (required for capture).
   - Verify the plugin is enabled in InfoPanel's plugin settings.
 
-### **Logs Show "ETW Access Denied" or Permission Errors**
-- **What It Means**: The plugin can't access Windows Event Tracing sessions.
+### **Logs Show API or Access Errors**
+- **What It Means**: The plugin can't access the PresentMon API or the target process.
 - **How to Fix**:
-  - Add your user account to the **"Performance Log Users"** Windows group:
-    1. Run `lusrmgr.msc` as administrator
-    2. Go to Groups > Performance Log Users
-    3. Add your user account
-    4. Log out and back in
-  - Alternatively, run InfoPanel as administrator (right-click, **Run as administrator**).
+  - Ensure the game/application is running in true fullscreen mode
+  - Verify the application uses DirectX, Vulkan, or OpenGL
+  - Check InfoPanel logs for specific error details
 
 ### **Logs Show "Failed to load PresentMonAPI2.dll"**
 - **What It Means**: The native DLL couldn't be loaded or found.
