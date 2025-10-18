@@ -5,10 +5,12 @@ using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 using Microsoft.Extensions.Logging;
 using PresentMon.BridgeContracts;
 
@@ -27,12 +29,16 @@ public sealed class PresentMonSessionManager
     private readonly List<float> _frameTimes = new();
     private const int MaxFrameSamples = 1000;
     private const int DiagnosticLogLimit = 10;
+    private const int MetricLogLimit = 5;
 
     private Process? _presentMonProcess;
     private CancellationTokenSource? _presentMonCts;
+    private StreamReader? _presentMonStdOutReader;
+    private StreamReader? _presentMonStdErrReader;
     private Dictionary<string, int>? _columnIndexMap;
     private int _maxColumnIndex;
     private int _diagnosticLinesLogged;
+    private int _metricLinesLogged;
     private TextWriter? _currentWriter;
     private readonly SemaphoreSlim _writerLock = new(1, 1);
 
@@ -46,6 +52,8 @@ public sealed class PresentMonSessionManager
     private float _lastGpuUtilization;
     private bool _useConsoleBuild;
     private string? _presentMonExecutablePath;
+    private static bool _privilegesEnabled;
+    private static readonly object PrivilegeLock = new();
 
     private readonly string[] _frameTimeColumnCandidates =
     {
@@ -89,6 +97,132 @@ public sealed class PresentMonSessionManager
         _logger = logger;
     }
 
+    private bool TryGetPrimaryToken(uint targetProcessId, out IntPtr primaryToken, out string? errorMessage)
+    {
+        primaryToken = IntPtr.Zero;
+        errorMessage = null;
+
+        if (!TryResolveSessionId(targetProcessId, out var sessionId, out errorMessage))
+        {
+            return false;
+        }
+
+        if (!WTSQueryUserToken(sessionId, out var impersonationToken))
+        {
+            errorMessage = $"WTSQueryUserToken failed with error {Marshal.GetLastWin32Error()}.";
+            return false;
+        }
+
+        try
+        {
+            const uint desiredAccess = TOKEN_ASSIGN_PRIMARY | TOKEN_DUPLICATE | TOKEN_QUERY | TOKEN_ADJUST_DEFAULT | TOKEN_ADJUST_SESSIONID;
+            if (!DuplicateTokenEx(impersonationToken, desiredAccess, IntPtr.Zero, SecurityImpersonation, TokenPrimary, out primaryToken))
+            {
+                errorMessage = $"DuplicateTokenEx failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            uint sessionIdCopy = sessionId;
+            if (!SetTokenInformation(primaryToken, TokenSessionId, ref sessionIdCopy, sizeof(uint)))
+            {
+                var error = Marshal.GetLastWin32Error();
+                _logger.LogDebug("SetTokenInformation(TokenSessionId) failed with error {Error}.", error);
+            }
+
+            return true;
+        }
+        finally
+        {
+            CloseHandle(impersonationToken);
+        }
+    }
+
+    private bool TryResolveSessionId(uint processId, out uint sessionId, out string? errorMessage)
+    {
+        sessionId = 0;
+        errorMessage = null;
+
+        if (ProcessIdToSessionId(processId, out sessionId))
+        {
+            return true;
+        }
+
+        var win32Error = Marshal.GetLastWin32Error();
+        _logger.LogDebug("ProcessIdToSessionId failed for process {ProcessId} with error {Error}.", processId, win32Error);
+
+        try
+        {
+            using var process = Process.GetProcessById((int)processId);
+            sessionId = (uint)process.SessionId;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Falling back to active console session for process {ProcessId}.", processId);
+        }
+
+        sessionId = WTSGetActiveConsoleSessionId();
+        if (sessionId == 0xFFFFFFFF)
+        {
+            errorMessage = "Unable to resolve active user session.";
+            return false;
+        }
+
+        return true;
+    }
+
+    private void EnsureProcessPrivileges()
+    {
+        if (_privilegesEnabled)
+        {
+            return;
+        }
+
+        lock (PrivilegeLock)
+        {
+            if (_privilegesEnabled)
+            {
+                return;
+            }
+
+            EnablePrivilege("SeIncreaseQuotaPrivilege");
+            EnablePrivilege("SeAssignPrimaryTokenPrivilege");
+            _privilegesEnabled = true;
+        }
+    }
+
+    private void EnablePrivilege(string privilege)
+    {
+        if (!OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, out var tokenHandle))
+        {
+            return;
+        }
+
+        try
+        {
+            if (!LookupPrivilegeValue(null, privilege, out var luid))
+            {
+                return;
+            }
+
+            var tokenPrivileges = new TOKEN_PRIVILEGES
+            {
+                PrivilegeCount = 1,
+                Privilege = new LUID_AND_ATTRIBUTES
+                {
+                    Luid = luid,
+                    Attributes = SE_PRIVILEGE_ENABLED
+                }
+            };
+
+            AdjustTokenPrivileges(tokenHandle, false, ref tokenPrivileges, 0, IntPtr.Zero, IntPtr.Zero);
+        }
+        finally
+        {
+            CloseHandle(tokenHandle);
+        }
+    }
+
     public async Task AcceptAndProcessClientAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Waiting for PresentMon bridge client on pipe '{PipeName}'.", PipeName);
@@ -103,8 +237,8 @@ public sealed class PresentMonSessionManager
         await pipe.WaitForConnectionAsync(cancellationToken).ConfigureAwait(false);
         _logger.LogInformation("Client connected to PresentMon bridge.");
 
-    using var reader = new StreamReader(pipe, Encoding.UTF8, leaveOpen: true);
-    using var writer = new StreamWriter(pipe, new UTF8Encoding(false)) { AutoFlush = true };
+        using var reader = new StreamReader(pipe, Encoding.UTF8, leaveOpen: true);
+        using var writer = new StreamWriter(pipe, new UTF8Encoding(false)) { AutoFlush = true };
 
         _currentWriter = writer;
         await SendMessageAsync(BridgeMessage.Ack("connected"), cancellationToken).ConfigureAwait(false);
@@ -157,13 +291,17 @@ public sealed class PresentMonSessionManager
                     return;
                 }
 
-                if (await StartMonitoringAsync(message.Start.ProcessId, message.Start.ProcessName, cancellationToken).ConfigureAwait(false))
+                var startResult = await StartMonitoringAsync(message.Start.ProcessId, message.Start.ProcessName, cancellationToken).ConfigureAwait(false);
+                if (startResult.Success)
                 {
                     await SendMessageAsync(BridgeMessage.Ack(message.RequestId), cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    await SendMessageAsync(BridgeMessage.CreateError("Failed to start PresentMon session.", message.RequestId), cancellationToken).ConfigureAwait(false);
+                    var error = string.IsNullOrWhiteSpace(startResult.ErrorMessage)
+                        ? "Failed to start PresentMon session."
+                        : startResult.ErrorMessage;
+                    await SendMessageAsync(BridgeMessage.CreateError(error, message.RequestId), cancellationToken).ConfigureAwait(false);
                 }
                 break;
 
@@ -182,64 +320,101 @@ public sealed class PresentMonSessionManager
         }
     }
 
-    private async Task<bool> StartMonitoringAsync(uint processId, string processName, CancellationToken cancellationToken)
+    private async Task<(bool Success, string? ErrorMessage)> StartMonitoringAsync(uint processId, string processName, CancellationToken cancellationToken)
     {
-        await StopMonitoringAsync().ConfigureAwait(false);
-
-        var exePath = ResolvePresentMonExecutable(out var useConsoleBuild);
-        if (string.IsNullOrEmpty(exePath))
+        try
         {
-            _logger.LogError("PresentMon executable not found.\nExpected in PresentMonDataProvider folder next to service.");
-            return false;
-        }
+            await StopMonitoringAsync().ConfigureAwait(false);
 
-        var providerDirectory = Path.GetDirectoryName(exePath)!;
-        _logger.LogInformation("Using PresentMon executable '{ExePath}'.", exePath);
-
-        await TerminateExistingSessionAsync(exePath, providerDirectory, useConsoleBuild).ConfigureAwait(false);
-
-        var arguments = BuildLaunchArguments(processId, processName, useConsoleBuild);
-        var startInfo = new ProcessStartInfo
-        {
-            FileName = exePath,
-            Arguments = arguments,
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true,
-            StandardOutputEncoding = Encoding.UTF8,
-            WorkingDirectory = providerDirectory
-        };
-
-        _presentMonProcess = Process.Start(startInfo);
-        if (_presentMonProcess == null)
-        {
-            _logger.LogError("Failed to launch PresentMon process.");
-            return false;
-        }
-
-        _useConsoleBuild = useConsoleBuild;
-        _presentMonExecutablePath = exePath;
-        _presentMonProcess.EnableRaisingEvents = true;
-        _presentMonProcess.Exited += async (_, _) =>
-        {
-            var exitCode = _presentMonProcess?.ExitCode;
-            _logger.LogInformation("PresentMon process exited with code {ExitCode}.", exitCode);
-
-            if (exitCode == 6)
+            var exePath = ResolvePresentMonExecutable(out var useConsoleBuild);
+            if (string.IsNullOrEmpty(exePath))
             {
-                await SendMessageAsync(BridgeMessage.CreateError("Access denied launching PresentMon."), CancellationToken.None).ConfigureAwait(false);
+                _logger.LogError("PresentMon executable not found.\nExpected in PresentMonDataProvider folder next to service.");
+                return (false, "PresentMon executable not found in PresentMonDataProvider folder.");
             }
-        };
 
-        _presentMonCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        _frameTimes.Clear();
-        ResetParsingState();
+            var providerDirectory = Path.GetDirectoryName(exePath)!;
+            _logger.LogInformation("Using PresentMon executable '{ExePath}'.", exePath);
 
-        _ = Task.Run(() => ProcessStdOutAsync(_presentMonProcess, _presentMonCts.Token), CancellationToken.None);
-        _ = Task.Run(() => ProcessStdErrAsync(_presentMonProcess, _presentMonCts.Token), CancellationToken.None);
+            await TerminateExistingSessionAsync(exePath, providerDirectory, useConsoleBuild).ConfigureAwait(false);
 
-        return true;
+            var arguments = BuildLaunchArguments(processId, processName, useConsoleBuild);
+
+            if (!TryLaunchPresentMonProcess(
+                    processId,
+                    exePath,
+                    arguments,
+                    providerDirectory,
+                    useConsoleBuild,
+                    cancellationToken,
+                    out var launchedProcess,
+                    out var stdoutReader,
+                    out var stderrReader,
+                    out var launchError))
+            {
+                if (!string.IsNullOrWhiteSpace(launchError))
+                {
+                    _logger.LogError("Failed to launch PresentMon process: {Error}", launchError);
+                    return (false, launchError);
+                }
+
+                _logger.LogError("Failed to launch PresentMon process.");
+                return (false, "Failed to launch PresentMon process.");
+            }
+
+            if (launchedProcess == null)
+            {
+                _logger.LogError("PresentMon launch returned null process instance.");
+                return (false, "Failed to launch PresentMon process.");
+            }
+
+            _useConsoleBuild = useConsoleBuild;
+            _presentMonExecutablePath = exePath;
+            _presentMonProcess = launchedProcess;
+            _presentMonStdOutReader = stdoutReader;
+            _presentMonStdErrReader = stderrReader;
+
+            _presentMonProcess.EnableRaisingEvents = true;
+            var processReference = _presentMonProcess;
+            _presentMonProcess.Exited += async (_, _) =>
+            {
+                try
+                {
+                    var exitCode = processReference?.ExitCode;
+                    _logger.LogInformation("PresentMon process exited with code {ExitCode}.", exitCode);
+
+                    if (exitCode == 6)
+                    {
+                        await SendMessageAsync(BridgeMessage.CreateError("Access denied launching PresentMon."), CancellationToken.None).ConfigureAwait(false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogDebug(ex, "Error while handling PresentMon exit event.");
+                }
+            };
+
+            _presentMonCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            _frameTimes.Clear();
+            ResetParsingState();
+
+            if (_presentMonStdOutReader != null)
+            {
+                _ = Task.Run(() => ProcessStdOutAsync(_presentMonStdOutReader!, _presentMonCts.Token), CancellationToken.None);
+            }
+
+            if (_presentMonStdErrReader != null)
+            {
+                _ = Task.Run(() => ProcessStdErrAsync(_presentMonStdErrReader!, _presentMonCts.Token), CancellationToken.None);
+            }
+
+            return (true, null);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to start PresentMon session.");
+            return (false, $"Exception starting PresentMon: {ex.Message}");
+        }
     }
 
     private async Task StopMonitoringAsync()
@@ -271,6 +446,11 @@ public sealed class PresentMonSessionManager
             }
         }
 
+        _presentMonStdOutReader?.Dispose();
+        _presentMonStdOutReader = null;
+        _presentMonStdErrReader?.Dispose();
+        _presentMonStdErrReader = null;
+
     _frameTimes.Clear();
     ResetParsingState();
 
@@ -287,17 +467,12 @@ public sealed class PresentMonSessionManager
         _presentMonExecutablePath = null;
     }
 
-    private async Task ProcessStdOutAsync(Process process, CancellationToken cancellationToken)
+    private async Task ProcessStdOutAsync(StreamReader reader, CancellationToken cancellationToken)
     {
-        if (process.StandardOutput == null)
-        {
-            return;
-        }
-
         try
         {
             string? line;
-            while (!cancellationToken.IsCancellationRequested && (line = await process.StandardOutput.ReadLineAsync().ConfigureAwait(false)) != null)
+            while (!cancellationToken.IsCancellationRequested && (line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 ProcessOutputLine(line);
             }
@@ -306,23 +481,24 @@ public sealed class PresentMonSessionManager
         {
             // Expected during shutdown.
         }
+        catch (ObjectDisposedException)
+        {
+        }
+        catch (IOException)
+        {
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed while reading PresentMon stdout.");
         }
     }
 
-    private async Task ProcessStdErrAsync(Process process, CancellationToken cancellationToken)
+    private async Task ProcessStdErrAsync(StreamReader reader, CancellationToken cancellationToken)
     {
-        if (process.StandardError == null)
-        {
-            return;
-        }
-
         try
         {
             string? line;
-            while (!cancellationToken.IsCancellationRequested && (line = await process.StandardError.ReadLineAsync().ConfigureAwait(false)) != null)
+            while (!cancellationToken.IsCancellationRequested && (line = await reader.ReadLineAsync().ConfigureAwait(false)) != null)
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
@@ -333,9 +509,206 @@ public sealed class PresentMonSessionManager
         catch (OperationCanceledException)
         {
         }
+        catch (ObjectDisposedException)
+        {
+        }
+        catch (IOException)
+        {
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed while reading PresentMon stderr.");
+        }
+    }
+
+    private bool TryLaunchPresentMonProcess(
+        uint targetProcessId,
+        string executablePath,
+        string arguments,
+        string workingDirectory,
+        bool useConsoleBuild,
+        CancellationToken cancellationToken,
+        out Process? process,
+        out StreamReader? stdoutReader,
+        out StreamReader? stderrReader,
+        out string? errorMessage)
+    {
+        process = null;
+        stdoutReader = null;
+        stderrReader = null;
+        errorMessage = null;
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            errorMessage = "Launch cancelled.";
+            return false;
+        }
+
+        if (!useConsoleBuild)
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = executablePath,
+                Arguments = arguments,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8,
+                WorkingDirectory = workingDirectory
+            };
+
+            process = Process.Start(startInfo);
+            if (process == null)
+            {
+                errorMessage = "Failed to launch PresentMon process.";
+                return false;
+            }
+
+            stdoutReader = process.StandardOutput;
+            stderrReader = process.StandardError;
+            return true;
+        }
+
+        EnsureProcessPrivileges();
+
+        SafeFileHandle? stdOutRead = null;
+        SafeFileHandle? stdOutWrite = null;
+        SafeFileHandle? stdErrRead = null;
+        SafeFileHandle? stdErrWrite = null;
+        IntPtr primaryToken = IntPtr.Zero;
+
+        try
+        {
+            if (!CreatePipe(out stdOutRead!, out stdOutWrite!, IntPtr.Zero, 0))
+            {
+                errorMessage = $"CreatePipe(stdout) failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!SetHandleInformation(stdOutRead!, HANDLE_FLAG_INHERIT, 0))
+            {
+                errorMessage = $"SetHandleInformation(stdout read) failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!SetHandleInformation(stdOutWrite!, HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT))
+            {
+                errorMessage = $"SetHandleInformation(stdout write) failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!CreatePipe(out stdErrRead!, out stdErrWrite!, IntPtr.Zero, 0))
+            {
+                errorMessage = $"CreatePipe(stderr) failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!SetHandleInformation(stdErrRead!, HANDLE_FLAG_INHERIT, 0))
+            {
+                errorMessage = $"SetHandleInformation(stderr read) failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!SetHandleInformation(stdErrWrite!, HANDLE_FLAG_INHERIT, HANDLE_FLAG_INHERIT))
+            {
+                errorMessage = $"SetHandleInformation(stderr write) failed with error {Marshal.GetLastWin32Error()}.";
+                return false;
+            }
+
+            if (!TryGetPrimaryToken(targetProcessId, out primaryToken, out errorMessage))
+            {
+                return false;
+            }
+
+            var startupInfo = new STARTUPINFO
+            {
+                cb = Marshal.SizeOf<STARTUPINFO>(),
+                dwFlags = STARTF_USESTDHANDLES,
+                lpDesktop = "winsta0\\default",
+                hStdOutput = stdOutWrite!.DangerousGetHandle(),
+                hStdError = stdErrWrite!.DangerousGetHandle(),
+                hStdInput = IntPtr.Zero
+            };
+
+            var commandLine = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(arguments))
+            {
+                commandLine.Append('"').Append(executablePath).Append('"').Append(' ').Append(arguments);
+            }
+            else
+            {
+                commandLine.Append('"').Append(executablePath).Append('"');
+            }
+
+            IntPtr environment = IntPtr.Zero;
+            try
+            {
+                if (!CreateEnvironmentBlock(out environment, primaryToken, false))
+                {
+                    environment = IntPtr.Zero;
+                }
+
+                var creationFlags = CREATE_UNICODE_ENVIRONMENT | CREATE_NO_WINDOW;
+                var success = CreateProcessAsUser(
+                    primaryToken,
+                    null,
+                    commandLine,
+                    IntPtr.Zero,
+                    IntPtr.Zero,
+                    true,
+                    creationFlags,
+                    environment,
+                    workingDirectory,
+                    ref startupInfo,
+                    out var processInfo);
+
+                if (!success)
+                {
+                    errorMessage = $"CreateProcessAsUser failed with error {Marshal.GetLastWin32Error()}";
+                    return false;
+                }
+
+                CloseHandle(processInfo.hThread);
+
+                try
+                {
+                    process = Process.GetProcessById((int)processInfo.dwProcessId);
+                }
+                finally
+                {
+                    CloseHandle(processInfo.hProcess);
+                }
+
+                var stdoutStream = new FileStream(stdOutRead!, FileAccess.Read, 4096, false);
+                var stderrStream = new FileStream(stdErrRead!, FileAccess.Read, 4096, false);
+                stdoutReader = new StreamReader(stdoutStream, Encoding.UTF8);
+                stderrReader = new StreamReader(stderrStream, Encoding.UTF8);
+
+                stdOutRead = null;
+                stdErrRead = null;
+
+                return true;
+            }
+            finally
+            {
+                if (environment != IntPtr.Zero)
+                {
+                    DestroyEnvironmentBlock(environment);
+                }
+            }
+        }
+        finally
+        {
+            if (primaryToken != IntPtr.Zero)
+            {
+                CloseHandle(primaryToken);
+            }
+
+            stdOutWrite?.Dispose();
+            stdErrWrite?.Dispose();
+            stdOutRead?.Dispose();
+            stdErrRead?.Dispose();
         }
     }
 
@@ -586,6 +959,12 @@ public sealed class PresentMonSessionManager
             GpuUtilizationPercent = _lastGpuUtilization
         };
 
+        if (_metricLinesLogged < MetricLogLimit)
+        {
+            _logger.LogInformation("Metrics sample -> FPS: {Fps:F1}, AvgFrameTime: {FrameTime:F3} ms, 1% Low: {OnePercentLow:F1}, 0.1% Low: {ZeroPointOneLow:F1}", fps, avgFrameTime, onePercentLowFps, zeroPointOnePercentLowFps);
+            _metricLinesLogged++;
+        }
+
         _ = SendMessageAsync(new BridgeMessage
         {
             Type = BridgeMessageType.Metrics,
@@ -598,6 +977,7 @@ public sealed class PresentMonSessionManager
         _columnIndexMap = null;
         _maxColumnIndex = 0;
         _diagnosticLinesLogged = 0;
+    _metricLinesLogged = 0;
         _lastGpuLatency = 0f;
         _lastGpuTime = 0f;
         _lastGpuBusy = 0f;
@@ -728,6 +1108,7 @@ public sealed class PresentMonSessionManager
 
             var args = new[]
             {
+                $"--process_id {processId}",
                 $"--process_name \"{targetName}\"",
                 "--output_stdout",
                 "--stop_existing_session",
@@ -784,9 +1165,9 @@ public sealed class PresentMonSessionManager
 
         foreach (var candidate in new[]
                  {
-                     "PresentMonDataProvider.exe",
                      "PresentMon-2.3.1-x64.exe",
                      "PresentMon-2.3.1-x64-DLSS4.exe",
+                     "PresentMonDataProvider.exe",
                      "PresentMon-1.10.0-x64.exe"
                  })
         {
@@ -838,4 +1219,128 @@ public sealed class PresentMonSessionManager
         useConsoleBuild
             ? "--terminate_existing_session --session_name PresentMonBridge"
             : "-terminate_existing_session";
+
+    private const int HANDLE_FLAG_INHERIT = 0x00000001;
+    private const int STARTF_USESTDHANDLES = 0x00000100;
+    private const int SecurityImpersonation = 2;
+    private const int TokenPrimary = 1;
+    private const int TokenSessionId = 12;
+    private const uint CREATE_UNICODE_ENVIRONMENT = 0x00000400;
+    private const uint CREATE_NO_WINDOW = 0x08000000;
+    private const uint TOKEN_ASSIGN_PRIMARY = 0x0001;
+    private const uint TOKEN_DUPLICATE = 0x0002;
+    private const uint TOKEN_QUERY = 0x0008;
+    private const uint TOKEN_ADJUST_PRIVILEGES = 0x0020;
+    private const uint TOKEN_ADJUST_DEFAULT = 0x0080;
+    private const uint TOKEN_ADJUST_SESSIONID = 0x0100;
+    private const uint SE_PRIVILEGE_ENABLED = 0x00000002;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    private struct STARTUPINFO
+    {
+        public int cb;
+        public string? lpReserved;
+        public string? lpDesktop;
+        public string? lpTitle;
+        public int dwX;
+        public int dwY;
+        public int dwXSize;
+        public int dwYSize;
+        public int dwXCountChars;
+        public int dwYCountChars;
+        public int dwFillAttribute;
+        public int dwFlags;
+        public short wShowWindow;
+        public short cbReserved2;
+        public IntPtr lpReserved2;
+        public IntPtr hStdInput;
+        public IntPtr hStdOutput;
+        public IntPtr hStdError;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PROCESS_INFORMATION
+    {
+        public IntPtr hProcess;
+        public IntPtr hThread;
+        public uint dwProcessId;
+        public uint dwThreadId;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct LUID
+    {
+        public uint LowPart;
+        public int HighPart;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct LUID_AND_ATTRIBUTES
+    {
+        public LUID Luid;
+        public uint Attributes;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct TOKEN_PRIVILEGES
+    {
+        public uint PrivilegeCount;
+        public LUID_AND_ATTRIBUTES Privilege;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CreatePipe(out SafeFileHandle hReadPipe, out SafeFileHandle hWritePipe, IntPtr lpPipeAttributes, int nSize);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool SetHandleInformation(SafeHandle hObject, int dwMask, int dwFlags);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool ProcessIdToSessionId(uint dwProcessId, out uint pSessionId);
+
+    [DllImport("kernel32.dll")]
+    private static extern uint WTSGetActiveConsoleSessionId();
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool CloseHandle(IntPtr hObject);
+
+    [DllImport("kernel32.dll")]
+    private static extern IntPtr GetCurrentProcess();
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    private static extern bool OpenProcessToken(IntPtr ProcessHandle, uint DesiredAccess, out IntPtr TokenHandle);
+
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool LookupPrivilegeValue(string? lpSystemName, string lpName, out LUID lpLuid);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    private static extern bool AdjustTokenPrivileges(IntPtr TokenHandle, bool DisableAllPrivileges, ref TOKEN_PRIVILEGES NewState, uint BufferLength, IntPtr PreviousState, IntPtr ReturnLength);
+
+    [DllImport("wtsapi32.dll", SetLastError = true)]
+    private static extern bool WTSQueryUserToken(uint SessionId, out IntPtr phToken);
+
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, IntPtr lpTokenAttributes, int ImpersonationLevel, int TokenType, out IntPtr phNewToken);
+
+    [DllImport("advapi32.dll", SetLastError = true)]
+    private static extern bool SetTokenInformation(IntPtr TokenHandle, int TokenInformationClass, ref uint TokenInformation, uint TokenInformationLength);
+
+    [DllImport("userenv.dll", SetLastError = true)]
+    private static extern bool CreateEnvironmentBlock(out IntPtr lpEnvironment, IntPtr hToken, bool bInherit);
+
+    [DllImport("userenv.dll", SetLastError = true)]
+    private static extern bool DestroyEnvironmentBlock(IntPtr lpEnvironment);
+
+    [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    private static extern bool CreateProcessAsUser(
+        IntPtr hToken,
+        string? lpApplicationName,
+        StringBuilder lpCommandLine,
+        IntPtr lpProcessAttributes,
+        IntPtr lpThreadAttributes,
+        bool bInheritHandles,
+        uint dwCreationFlags,
+        IntPtr lpEnvironment,
+        string? lpCurrentDirectory,
+        ref STARTUPINFO lpStartupInfo,
+        out PROCESS_INFORMATION lpProcessInformation);
 }

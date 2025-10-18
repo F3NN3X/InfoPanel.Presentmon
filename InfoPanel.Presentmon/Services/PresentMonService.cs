@@ -170,6 +170,62 @@ namespace InfoPanel.Presentmon.Services
             }
         }
 
+        private async Task StopBridgeServiceAsync()
+        {
+            await _bridgeServiceLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                ServiceController? controller = null;
+                try
+                {
+                    controller = new ServiceController(BridgeServiceName);
+                    controller.Refresh();
+                }
+                catch (InvalidOperationException)
+                {
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"PresentMon: failed to access bridge service. {ex.Message}");
+                    return;
+                }
+
+                using (controller)
+                {
+                    Console.WriteLine("PresentMon: stopping bridge service.");
+                    try
+                    {
+                        if (controller.Status != ServiceControllerStatus.Stopped && controller.Status != ServiceControllerStatus.StopPending)
+                        {
+                            controller.Stop();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"PresentMon: direct stop failed ({ex.Message}). Falling back to sc.exe.");
+                        using var stopCts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+                        await RunScCommandAsync($"stop {BridgeServiceName}", 15000, stopCts.Token, ignoreErrors: true).ConfigureAwait(false);
+                    }
+
+                    try
+                    {
+                        controller.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(15));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"PresentMon: waiting for bridge service shutdown failed. {ex.Message}");
+                    }
+                }
+
+                _bridgeServiceEnsured = false;
+            }
+            finally
+            {
+                _bridgeServiceLock.Release();
+            }
+        }
+
         private async Task ProcessOutputAsync(CancellationToken cancellationToken)
         {
             if (_presentMonProcess?.StandardOutput == null)
@@ -965,7 +1021,24 @@ namespace InfoPanel.Presentmon.Services
 
         public void Dispose()
         {
-            StopMonitoringAsync().Wait(2000);
+            try
+            {
+                StopMonitoringAsync().Wait(2000);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PresentMon: error stopping monitoring during dispose. {ex.Message}");
+            }
+
+            try
+            {
+                StopBridgeServiceAsync().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PresentMon: error stopping bridge service during dispose. {ex.Message}");
+            }
+
             _processCts?.Dispose();
             _bridgeClient.MetricsReceived -= OnBridgeMetricsReceived;
             _bridgeClient.Disconnected -= OnBridgeDisconnected;

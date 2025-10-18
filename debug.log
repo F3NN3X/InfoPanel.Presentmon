@@ -20,8 +20,8 @@ Warning: Sentry option 'Debug' is set to true while Environment is production. B
   Debug: Persistence directory is not set, returning.
   Debug: Created directory for installation ID file (C:\Users\joransrb\AppData\Local\Sentry\469550BD7904070149D93D658A87F9B29DE566D7).
   Debug: Resolved installation ID 'bf7c523b-77d4-463d-bff9-93c7284a7493'.
-   Info: Started new session (SID: 84a2ddbce76443f6908dce67dc87aaaa; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
-  Debug: Persisting session (SID: '84a2ddbce76443f6908dce67dc87aaaa') to a file.
+   Info: Started new session (SID: c99e07defc554aaf8d9cbed6f24d9255; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
+  Debug: Persisting session (SID: 'c99e07defc554aaf8d9cbed6f24d9255') to a file.
   Debug: Persistence directory is not set, returning.
   Debug: Enqueuing envelope
    Info: Envelope queued up: ''
@@ -55,34 +55,34 @@ System.Net.Http.HttpRequestException: The requested name is valid, but no data o
    at Sentry.Internal.Http.HttpTransport.SendEnvelopeAsync(Envelope envelope, CancellationToken cancellationToken)
    at Sentry.Internal.BackgroundWorker.DoWorkAsync()
   Debug: De-queueing event
-[16:11:56 INF] Application started. Press Ctrl+C to shut down.
-[16:11:56 INF] Hosting environment: Production
-[16:11:56 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
-[16:11:57 INF] PawniO detected: version 2.0.1.0
-[16:11:57 DBG] LibreMonitor starting initialization
-[16:11:57 DBG] PluginMonitor starting initialization
+[17:01:03 INF] Application started. Press Ctrl+C to shut down.
+[17:01:03 INF] Hosting environment: Production
+[17:01:03 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
+[17:01:04 INF] PawniO detected: version 2.0.1.0
+[17:01:04 DBG] LibreMonitor starting initialization
+[17:01:04 DBG] PluginMonitor starting initialization
 System.Windows.Data Error: 4 : Cannot find source for binding with reference 'ElementName=TitleBar'. BindingExpression:(no path); DataItem=null; target element is 'NavigationView' (Name='RootNavigation'); target property is 'TitleBar' (type 'TitleBar')
-[16:11:57 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
-[16:11:57 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
-[16:11:57 DBG] Reading HWiNFO shared memory
+[17:01:04 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
+[17:01:04 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
+[17:01:04 DBG] Reading HWiNFO shared memory
 [PluginUpdateNotifier] Reading config file from C:\ProgramData\InfoPanel\plugins\InfoPanel.PluginUpdateNotifier\InfoPanel.PluginUpdateNotifier.dll.ini
 [PluginUpdateNotifier] Check interval set to: 4 hours
-[16:11:58 DBG] Typeface cache miss: Arial-Normal-False-False
-[16:11:58 INF] Plugin Clock loaded successfully
-[16:11:58 DBG] Typeface cache miss: Arial-Black-False-False
-[16:11:59 DBG] Reading HWiNFO shared memory
-[16:11:59 INF] Plugin Drive Info loaded successfully
-[16:11:59 INF] Plugin HWiNFO Registry loaded successfully
-[16:11:59 INF] Plugin Network Info loaded successfully
-[16:11:59 INF] Plugin System Info loaded successfully
-[16:11:59 DBG] Plugin HWiNFO Registry task started
-[16:11:59 DBG] Plugin Drive Info task started
-[16:11:59 DBG] Plugin Network Info task started
-[16:11:59 DBG] Plugin System Info task started
+[17:01:05 DBG] Typeface cache miss: Arial-Normal-False-False
+[17:01:05 INF] Plugin Clock loaded successfully
+[17:01:05 DBG] Typeface cache miss: Arial-Black-False-False
+[17:01:06 DBG] Reading HWiNFO shared memory
+[17:01:06 INF] Plugin Drive Info loaded successfully
+[17:01:06 INF] Plugin HWiNFO Registry loaded successfully
+[17:01:06 INF] Plugin Network Info loaded successfully
+[17:01:06 INF] Plugin System Info loaded successfully
+[17:01:06 DBG] Plugin Drive Info task started
+[17:01:06 DBG] Plugin HWiNFO Registry task started
+[17:01:06 DBG] Plugin Network Info task started
+[17:01:06 DBG] Plugin System Info task started
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:00 DBG] Reading HWiNFO shared memory
-[16:12:00 INF] Plugin Volume Info loaded successfully
-[16:12:00 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
+[17:01:07 DBG] Reading HWiNFO shared memory
+[17:01:07 INF] Plugin Volume Info loaded successfully
+[17:01:07 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
 Weather Plugin: Reading INI file from C:\ProgramData\InfoPanel\plugins\InfoPanel.MetYr\InfoPanel.MetYr.dll.ini
 Weather Plugin: INI file content:
 [Yr Weather Plugin]
@@ -96,7 +96,7 @@ UtcOffsetHours = 2
 ForecastDays = 7
 TemperatureUnit = C
 IconUrl = https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-18 14:12'
+Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-18 15:01'
 Weather Plugin: Validated format 'ddd d MMM' -> 'Sat 18 Oct'
 Weather Plugin: INI Latitude/Longitude invalid or missing, will use geocoding.
 Weather Plugin: Read location from INI: Brevik
@@ -108,33 +108,32 @@ Weather Plugin: Forecast days set to: 7
 Weather Plugin: Temperature unit set to: C
 Weather Plugin: Validating IconUrl: 'https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/'
 Weather Plugin: Testing custom IconUrl: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-[16:12:00 INF] Plugin Weather Info - MET/Yr loaded successfully
-[16:12:00 INF] Plugin Plugin Update Notifier loaded successfully
+[17:01:07 INF] Plugin Weather Info - MET/Yr loaded successfully
+[17:01:07 INF] Plugin Plugin Update Notifier loaded successfully
 Initializing PresentMon FPS Plugin v2.0.0...
 Starting monitoring task...
 Plugin initialized successfully
 FPS sensors loaded into UI
-[16:12:00 INF] Plugin PresentMon FPS loaded successfully
+[17:01:07 INF] Plugin PresentMon FPS loaded successfully
 Monitoring loop started
-[16:12:00 INF] Plugin Spotify loaded successfully
-[16:12:00 INF] Plugins loaded in 2687ms
 Weather Plugin: Successfully accessed test SVG icon: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-[16:12:00 DBG] Plugin Volume Info task started
-[16:12:00 DBG] Plugin Weather Info - OpenWeatherMap task started
-[16:12:00 DBG] Plugin Weather Info - MET/Yr task started
-Weather Plugin: UpdateAsync called at 2025-10-18T14:12:00Z
+[17:01:07 DBG] Plugin Volume Info task started
+[17:01:07 DBG] Plugin Weather Info - OpenWeatherMap task started
+[17:01:07 DBG] Plugin Weather Info - MET/Yr task started
+Weather Plugin: UpdateAsync called at 2025-10-18T15:01:07Z
 Weather Plugin: Geocoding URL: https://nominatim.openstreetmap.org/search?q=Brevik&format=json&limit=1
-[16:12:00 DBG] Plugin Plugin Update Notifier task started
-[16:12:00 DBG] Plugin PresentMon FPS task started
-[16:12:00 DBG] Plugin Spotify task started
-Weather Plugin: Nominatim response: [{"place_id":154116111,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
+[17:01:07 DBG] Plugin Plugin Update Notifier task started
+[17:01:07 DBG] Plugin PresentMon FPS task started
+[17:01:07 INF] Plugin Spotify loaded successfully
+[17:01:07 INF] Plugins loaded in 2920ms
+Weather Plugin: Nominatim response: [{"place_id":153934922,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
 Weather Plugin: Coordinates set from Nominatim - Lat: 59.3474836, Lon: 18.2043939
 Weather Plugin: Fetching current weather: https://api.met.no/weatherapi/nowcast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T14:08:08Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-18T14:10:00Z","data":{"instant":{"details":{"air_temperature":7.1,"precipitation_rate":0.0,"relative_humidity":...
-Weather Plugin: Current timeseries from nowcast: 2025-10-18T14:10:00Z
+Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T14:58:10Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-18T15:00:00Z","data":{"instant":{"details":{"air_temperature":6.6,"precipitation_rate":0.0,"relative_humidity":...
+Weather Plugin: Current timeseries from nowcast: 2025-10-18T15:00:00Z
 Weather Plugin: Fetching forecast: https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T13:26:48Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
-Weather Plugin: Added forecast row - Date: Sun 19 Oct, Weather: Cloudy, Temp: 8 �C / 1 �C, Precip: 0.0 mm, Wind: 3.2 m/s SW
+Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T14:26:19Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
+Weather Plugin: Added forecast row - Date: Sun 19 Oct, Weather: Cloudy, Temp: 8 �C / 2 �C, Precip: 0.0 mm, Wind: 3.2 m/s SW
 Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 10 �C / 2 �C, Precip: 0.0 mm, Wind: 3.0 m/s S
 Weather Plugin: Added forecast row - Date: Tue 21 Oct, Weather: Cloudy, Temp: 11 �C / 8 �C, Precip: 2.6 mm, Wind: 5.0 m/s S
 Weather Plugin: Added forecast row - Date: Wed 22 Oct, Weather: Cloudy, Temp: 11 �C / 10 �C, Precip: 3.3 mm, Wind: 4.6 m/s S
@@ -145,23 +144,51 @@ Weather Plugin: Mapped symbol 'clearsky_day' to icon: clear-day, description: Cl
 Weather Plugin: Using custom icon URL: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
 Weather Plugin: Checking SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
 Weather Plugin: Using SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-Weather Plugin: Set data - Temp: 7.1�C, Weather: clearsky, Description: Clear Sky, Icon: clear-day
-Weather Plugin: UTC time: 2025-10-18 14:12:00 UTC
-Weather Plugin: Adjusted time: 2025-10-18 16:12:00 (offset: 2 hours)
-Weather Plugin: Last refreshed set to: 2025-10-18 16:12
-[16:12:01 DBG] Reading HWiNFO shared memory
-[16:12:02 DBG] Reading HWiNFO shared memory
-[16:12:04 DBG] Reading HWiNFO shared memory
+Weather Plugin: Set data - Temp: 6.6�C, Weather: clearsky, Description: Clear Sky, Icon: clear-day
+Weather Plugin: UTC time: 2025-10-18 15:01:08 UTC
+Weather Plugin: Adjusted time: 2025-10-18 17:01:08 (offset: 2 hours)
+Weather Plugin: Last refreshed set to: 2025-10-18 17:01
+[17:01:08 DBG] Plugin Spotify task started
+[17:01:08 DBG] Reading HWiNFO shared memory
+[17:01:10 DBG] Reading HWiNFO shared memory
+[17:01:11 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:05 DBG] Reading HWiNFO shared memory
-[16:12:06 DBG] Reading HWiNFO shared memory
-[16:12:07 INF] LibreHardwareMonitor computer opened in 9564ms
-[16:12:08 DBG] Reading HWiNFO shared memory
-[16:12:09 DBG] Reading HWiNFO shared memory
+[17:01:12 DBG] Reading HWiNFO shared memory
+[17:01:14 DBG] Reading HWiNFO shared memory
+[17:01:14 INF] LibreHardwareMonitor computer opened in 9571ms
+[17:01:15 DBG] Reading HWiNFO shared memory
+[17:01:16 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:10 DBG] Reading HWiNFO shared memory
-[16:12:12 DBG] Reading HWiNFO shared memory
-Switching to: EdgeGameAssist (PID: 40136)
+[17:01:17 DBG] Reading HWiNFO shared memory
+[17:01:19 DBG] Reading HWiNFO shared memory
+[17:01:20 DBG] Reading HWiNFO shared memory
+[17:01:21 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:01:23 DBG] Reading HWiNFO shared memory
+[17:01:24 DBG] Reading HWiNFO shared memory
+[17:01:25 DBG] Reading HWiNFO shared memory
+[17:01:27 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:01:28 DBG] Reading HWiNFO shared memory
+[17:01:29 DBG] Reading HWiNFO shared memory
+[17:01:31 DBG] Reading HWiNFO shared memory
+[17:01:32 DBG] Reading HWiNFO shared memory
+[17:01:32 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:01:34 DBG] Reading HWiNFO shared memory
+[17:01:35 DBG] Reading HWiNFO shared memory
+[17:01:36 DBG] Reading HWiNFO shared memory
+[17:01:37 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:01:39 DBG] Reading HWiNFO shared memory
+[17:01:40 DBG] Reading HWiNFO shared memory
+[17:01:41 DBG] Reading HWiNFO shared memory
+[17:01:43 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:01:44 DBG] Reading HWiNFO shared memory
+[17:01:45 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 37200)
 PresentMon bridge: sc.exe stop PresentMonBridgeService
 PresentMon bridge (sc): [SC] ControlService FAILED 1062:
 
@@ -180,143 +207,121 @@ PresentMon bridge (sc): SERVICE_NAME: PresentMonBridgeService
         SERVICE_EXIT_CODE  : 0  (0x0)
         CHECKPOINT         : 0x0
         WAIT_HINT          : 0x7d0
-        PID                : 49204
+        PID                : 26804
         FLAGS              :
-PresentMon: capturing via bridge service.
-[16:12:13 DBG] Reading HWiNFO shared memory
-[16:12:14 DBG] Reading HWiNFO shared memory
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:01:47 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Switching to: NMS (PID: 27068)
-PresentMon: stop requested.
-PresentMon: stopping bridge session.
-[16:12:15 DBG] Reading HWiNFO shared memory
-PresentMon: bridge session stopped.
-Bridge: disconnected from service.
+[17:01:48 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 37200)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:01:49 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:01:50 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 37200)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:01:52 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 37200)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:01:53 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:01:54 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 37200)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:01:56 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:01:57 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 37200)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:01:58 DBG] Reading HWiNFO shared memory
+[17:02:00 DBG] Reading HWiNFO shared memory
+[17:02:01 DBG] Reading HWiNFO shared memory
+[17:02:02 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:02:04 DBG] Reading HWiNFO shared memory
+[17:02:05 DBG] Reading HWiNFO shared memory
+[17:02:06 DBG] Reading HWiNFO shared memory
+[17:02:07 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:02:09 DBG] Reading HWiNFO shared memory
+Switching to: EdgeGameAssist (PID: 40136)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:02:10 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:02:11 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:02:13 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:02:14 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:02:15 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:02:17 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:02:18 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[17:02:19 DBG] Reading HWiNFO shared memory
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:02:20 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
 PresentMon: bridge rejected start request.
 PresentMon: bridge start failed. No legacy PresentMon fallback is available.
-Switching to: NMS (PID: 27068)
-PresentMon: stop requested.
-PresentMon: bridge session stopped.
-[16:12:17 DBG] Reading HWiNFO shared memory
-[16:12:18 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.TimeoutException' in System.Private.CoreLib.dll
-Bridge: failed to connect to service. The operation has timed out.
-PresentMon: bridge service unavailable.
+[17:02:22 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+[17:02:23 DBG] Reading HWiNFO shared memory
 PresentMon: bridge start failed. No legacy PresentMon fallback is available.
-[16:12:19 DBG] Reading HWiNFO shared memory
-Switching to: NMS (PID: 27068)
-PresentMon: stop requested.
-PresentMon: bridge session stopped.
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:21 DBG] Reading HWiNFO shared memory
-PresentMon: capturing via bridge service.
-[16:12:22 DBG] Reading HWiNFO shared memory
-[16:12:23 DBG] Reading HWiNFO shared memory
-[16:12:25 DBG] Reading HWiNFO shared memory
+[17:02:24 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40420)
+Bridge: error from service - Exception starting PresentMon: Handle does not support asynchronous operations. The parameters to the FileStream constructor may need to be changed to indicate that the handle was opened synchronously (that is, it was not opened for overlapped I/O). (Parameter 'handle')
+PresentMon: bridge rejected start request.
+PresentMon: bridge start failed. No legacy PresentMon fallback is available.
+[17:02:26 DBG] Reading HWiNFO shared memory
+[17:02:27 DBG] Reading HWiNFO shared memory
+[17:02:28 DBG] Reading HWiNFO shared memory
+[17:02:29 DBG] BeadaPanelTask stopping
+[17:02:29 DBG] TuringPanelTask stopping
+[17:02:29 DBG] LibreMonitor stopping
+[17:02:29 DBG] LibreMonitor task cancelled
+[17:02:29 DBG] Disposing resources for LibreMonitor
+[17:02:29 DBG] LibreMonitor stopped
+[17:02:29 DBG] PluginMonitor stopping
+[17:02:29 DBG] PluginMonitor task cancelled
+[17:02:29 DBG] Disposing resources for PluginMonitor
+[17:02:29 DBG] PluginMonitor stopped
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:26 DBG] Reading HWiNFO shared memory
-[16:12:27 DBG] Reading HWiNFO shared memory
-[16:12:29 DBG] Reading HWiNFO shared memory
-[16:12:30 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ArgumentException' in System.Diagnostics.Process.dll
-Process 27068 is no longer valid
-PresentMon: stop requested.
-PresentMon: stopping bridge session.
-[16:12:31 DBG] Reading HWiNFO shared memory
-PresentMon: bridge session stopped.
-Bridge: disconnected from service.
-[16:12:32 DBG] Reading HWiNFO shared memory
-[16:12:34 DBG] Reading HWiNFO shared memory
-[16:12:35 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:36 DBG] Reading HWiNFO shared memory
-[16:12:38 DBG] Reading HWiNFO shared memory
-[16:12:39 DBG] Reading HWiNFO shared memory
-[16:12:40 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:42 DBG] Reading HWiNFO shared memory
-[16:12:43 DBG] Reading HWiNFO shared memory
-[16:12:44 DBG] Reading HWiNFO shared memory
-[16:12:46 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:47 DBG] Reading HWiNFO shared memory
-[16:12:48 DBG] Reading HWiNFO shared memory
-[16:12:49 DBG] Reading HWiNFO shared memory
-[16:12:51 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:52 DBG] Reading HWiNFO shared memory
-[16:12:53 DBG] Reading HWiNFO shared memory
-[16:12:54 DBG] Reading HWiNFO shared memory
-[16:12:56 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:12:57 DBG] Reading HWiNFO shared memory
-[16:12:58 DBG] Reading HWiNFO shared memory
-[16:13:00 DBG] Reading HWiNFO shared memory
-[16:13:01 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:13:02 DBG] Reading HWiNFO shared memory
-[16:13:04 DBG] Reading HWiNFO shared memory
-[16:13:05 DBG] Reading HWiNFO shared memory
-[16:13:06 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Switching to: bf6 (PID: 22912)
-PresentMon: capturing via bridge service.
-[16:13:08 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:09 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:10 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:11 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:13 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:14 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:15 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:17 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:18 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:19 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:21 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:22 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[16:13:23 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ArgumentException' in System.Diagnostics.Process.dll
-Process 22912 is no longer valid
-PresentMon: stop requested.
-PresentMon: stopping bridge session.
-[16:13:25 DBG] Reading HWiNFO shared memory
-PresentMon: bridge session stopped.
-Bridge: disconnected from service.
-[16:13:26 DBG] Reading HWiNFO shared memory
-[16:13:27 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[16:13:28 DBG] Reading HWiNFO shared memory
-[16:13:30 DBG] Reading HWiNFO shared memory
-[16:13:31 DBG] BeadaPanelTask stopping
-[16:13:31 DBG] TuringPanelTask stopping
-[16:13:31 DBG] LibreMonitor stopping
-[16:13:31 DBG] LibreMonitor task cancelled
-[16:13:31 DBG] Reading HWiNFO shared memory
-[16:13:31 DBG] Disposing resources for LibreMonitor
-[16:13:31 DBG] LibreMonitor stopped
-[16:13:31 DBG] PluginMonitor stopping
-[16:13:31 DBG] PluginMonitor task cancelled
-[16:13:31 DBG] Disposing resources for PluginMonitor
-[16:13:31 DBG] PluginMonitor stopped
    Info: AppDomain process exited: Disposing SDK.
    Info: Disposing the Hub.
   Debug: Successfully flushed all events up to call to FlushAsync.
-The program '[51612] InfoPanel.exe' has exited with code 0 (0x0).
+The program '[52300] InfoPanel.exe' has exited with code 0 (0x0).
