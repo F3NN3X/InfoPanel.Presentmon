@@ -1,0 +1,448 @@
+ H3E
+ w$H
+__C_specific_handler
+__current_exception
+__current_exception_context
+__CxxFrameHandler4
+__p__commode
+__setusermatherr
+__std_terminate
+__stdio_common_vsprintf_s
+__stdio_common_vsscanf
+_c_exit
+_cexit
+_configthreadlocale
+_configure_narrow_argv
+_crt_atexit
+_dclass
+_exit
+_get_narrow_winmain_command_line
+_initialize_narrow_environment
+_initialize_onexit_table
+_initterm
+_initterm_e
+_register_onexit_function
+_register_thread_local_exe_atexit_callback
+_seh_filter_exe
+_set_app_type
+_set_fmode
+_set_new_mode
+_setmbcp
+_stricmp
+-no_track_input
+-track_input
+-v1_metrics
+-v2_metrics
+;csm
+:$-,H
+!This program cannot be run in DOS mode.
+?}aqi
+.?AVCCmdTarget@@
+.?AVCCommandLineInfo@@
+.?AVCObject@@
+.?AVCPresentMonConsoleWrapper@@
+.?AVCPresentMonDataBuffer@@
+.?AVCPresentMonDataProviderApp@@
+.?AVCPresentMonDataProviderCommandLineInfo@@
+.?AVCPresentMonDataProviderConnectWnd@@
+.?AVCPresentMonDataProviderThread@@
+.?AVCTokenString@@
+.?AVCWinApp@@
+.?AVCWinThread@@
+.?AVCWnd@@
+.?AVtype_info@@
+.00cfg
+.bss
+.cfg
+.CRT$XCA
+.CRT$XCAA
+.CRT$XCL
+.CRT$XCU
+.CRT$XCZ
+.CRT$XIA
+.CRT$XIAA
+.CRT$XIAC
+.CRT$XIZ
+.CRT$XLA
+.CRT$XLZ
+.CRT$XPA
+.CRT$XPZ
+.CRT$XTA
+.CRT$XTZ
+.data
+.data$rs
+.idata$2
+.idata$3
+.idata$4
+.idata$5
+.idata$6
+.pdata
+.rdata
+.rdata$r
+.rdata$T
+.rdata$voltmd
+.rdata$zzzdbg
+.rsrc$01
+.rsrc$02
+.rtc$IAA
+.rtc$IZZ
+.rtc$TAA
+.rtc$TZZ
+.text
+.text$di
+.text$mn
+.text$mn$00
+.text$x
+.text$yd
+.tls
+.tls$
+.tls$ZZZ
+.xdata
+(R"K(p
+{J~`$
+}O6<D
+@_^[
+@.data
+@.reloc
+@.rsrc
+@%lm
+@SVWH
+@UVH
+*D$`
+*D$h
+\$ UVWATAUAVAWH
+\$ UWATAUAVH
+\$(3
+\$@H
+\$`L
+\$03
+\$0H
+\$hH
+\$PH
+\$PI
+\$pL
+#)qN?
+%lld
+%s -session_name PresentMonDataProvider -stop_existing_session -process_id %d -output_stdout -qpc_time
+%s -session_name PresentMonDataProvider -stop_existing_session -process_id %d -output_stdout -track_gpu -qpc_time
+%s -session_name PresentMonDataProvider -terminate_existing
+%s -session_name PresentMonDataProvider -terminate_existing_session
+`.rdata
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0"><trustInfo xmlns="urn:schemas-microsoft-com:asm.v3"><security><requestedPrivileges><requestedExecutionLevel level="asInvoker" uiAccess="false"></requestedExecutionLevel></requestedPrivileges></security></trustInfo><application xmlns="urn:schemas-microsoft-com:asm.v3"><windowsSettings><dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">true</dpiAware></windowsSettings></application></assembly>
+|$ UATAUAVAWH
+|$0H
+|$8H
+|$HH
+|$PH
+|$XH
+0_^[
+0A_A^A]A\_
+0x%llX
+8_^][
+8SSTRu
+A_A^A]A\]
+A_A^A\_]
+A^_]
+A^A]A\_]
+AllInputToPhotonLatency
+AllowsTearing
+AnimationError
+AnimationTime
+api-ms-win-crt-heap-l1-1-0.dll
+api-ms-win-crt-locale-l1-1-0.dll
+api-ms-win-crt-math-l1-1-0.dll
+api-ms-win-crt-runtime-l1-1-0.dll
+api-ms-win-crt-stdio-l1-1-0.dll
+api-ms-win-crt-string-l1-1-0.dll
+Application
+ApplicationFrameWindow
+B Hi
+b&Nk%
+BurstDelay
+c{R/
+C%IJ
+c~R#
+ClickToPhotonLatency
+CloseHandle
+CM{zzgg
+Composed: Copy with CPU GDI
+Composed: Copy with GPU GDI
+Composed: Flip
+ConsoleCmd
+ConsoleMode
+ConsolePath
+CPresentMonDataProviderThread
+CPUBusy
+CPUStartQPC
+CPUWait
+CreateEventA
+CreateFileMappingA
+CreatePipe
+CreateProcessA
+Creating PresentMon console wrapper
+csR!
+cxR(
+cyR-
+D:\Projects\RTSS737\Release\SDK\Tools\PresentMonDataProvider\x64\Release\PresentMonDataProvider.pdb
+d]wB
+D$  
+D$ "
+D$ $
+D$ A
+D$ E3
+D$ H
+D$ L
+D$ M
+D$(3
+D$(H
+D$(L
+D$@3
+D$@H
+D$`=
+D$`H
+D$`I
+D$<H
+D$09
+D$0D
+D$0H
+D$0L
+D$8H
+d$8I
+d$dE
+D$dH
+D$HH
+D$PE3
+D$ph
+D$pL
+D$Ps
+D$tH
+D3D9
+DeleteCriticalSection
+DisplayedTime
+DisplayLatency
+Dropped
+DXGI
+ED$`H
+EnableWindow
+EtwFlushPeriod
+exit
+Failed to initialize PresentMon API V2, error code %d
+Failed to register frame query, error code %d
+Failed to spawn %s
+Failed to start streaming frames for process %d
+Failed to start streaming frames for process %d, error code %d
+FindWindowA
+FindWindowExA
+FrameTime
+free
+GCTL
+Genu
+GetClassNameA
+GetCurrentProcess
+GetCurrentProcessId
+GetCurrentThreadId
+GetForegroundWindow
+GetLastError
+GetModuleFileNameA
+GetModuleHandleW
+GetPrivateProfileIntA
+GetPrivateProfileStringA
+GetStartupInfoW
+GetSystemTimeAsFileTime
+GetTickCount
+GetWindowThreadProcessId
+GPUBusy
+GPULatency
+GPUTime
+GPUWait
+H9q0
+Hardware Composed: Independent Flip
+Hardware: Independent Flip
+Hardware: Legacy Copy to front buffer
+Hardware: Legacy Flip
+I;Mh
+IDATx
+IEND
+ifrB~
+IHDR
+IibB
+ineI
+InitializeCriticalSectionEx
+InitializeSListHead
+Initializing PresentMon API V2
+IsDebuggerPresent
+IsProcessorFeaturePresent
+IW[+
+J_~)}
+KERNEL32.dll
+L$ 3
+L$ D
+L$ SUVWH
+L$ SVWH
+L$(3
+L$(H
+l$(L
+L$@A
+l$`3
+l$`H
+l$<A
+L$0A
+L$0D
+L$0H
+L$0L
+L$49L$8u-E3
+l$8H
+L$dD
+L$HH
+L$P3
+l$pH
+L$pI+
+L$PM
+L$XH
+LoadCursorA
+MapViewOfFile
+memcpy
+memset
+mfc140.dll
+MsAllInputToPhotonLatency
+MsAnimationError
+MsBetweenAppStart
+msBetweenDisplayChange
+msBetweenPresents
+MsBetweenSimulationStart
+MsClickToPhotonLatency
+MsCPUBusy
+MsCPUWait
+msGPUActive
+MsGPUBusy
+MsGPULatency
+MsGPUTime
+MsGPUWait
+msInPresentAPI
+MsPCLatency
+MsRenderPresentLatency
+msSinceInput
+msUntilDisplayed
+msUntilRenderComplete
+msUntilRenderStart
+NIIR
+ntel
+O@E3
+OMuC
+ont+
+OpenFileMappingA
+OutputDebugStringA
+OutputDebugStringW
+oy94
+PA_A^A]A\_^]
+PathRenameExtensionA
+PDMPH
+PeekNamedPipe
+pmCloseSession
+pmConsumeFrames
+PMDPSharedMemory
+pmFreeFrameQuery
+pmOpenSession
+pmRegisterFrameQuery
+pmSetEtwFlushPeriod
+pmStartTrackingProcess
+pmStopTrackingProcess
+PostMessageA
+PresentFlags
+PresentMode
+PresentMon-%d.%d.%d
+PresentMonAPI2Loader.dll
+PresentMonDataProvider
+PresentMonDataProvider installation is not requested, aborting
+PresentMonDataProvider is already active, aborting
+PresentMonDataProviderConnectWnd
+PresentRuntime
+ProcessID
+QPCTime
+QueryPerformanceCounter
+QueryPerformanceFrequency
+ReadFile
+RegisterWindowMessageA
+ResumeThread
+RSDSkm
+RtlCaptureContext
+RtlLookupFunctionEntry
+RtlVirtualUnwind
+RTSSSharedMemoryV2
+Runtime
+SetEvent
+SetHandleInformation
+SetThreadPriority
+Settings
+SetUnhandledExceptionFilter
+SHLWAPI.dll
+Sleep
+SleepPeriod
+Spawning %s
+Starting PresentMonDataProvider thread
+strcat_s
+strcmp
+strcpy_s
+Streaming frames for process %d
+strpbrk
+strstr
+SwapChainAddress
+SwitchToThread
+SyncInterval
+t!=p
+t!eH
+t(=`
+t}E3
+t$ 3
+t$ E3
+t$ H
+t$ UWATAVAWH
+t$ UWAVH
+t$ WH
+t$(L
+T$@3
+t$@D
+t$@H
+T$`H
+T$0H
+T$4D
+t$4H
+T$8D
+t$8H
+t$8L
+t$HA
+t$HH
+T$PH
+t$PL
+t$XD
+t$xH
+terminate
+TerminateProcess
+tHE3
+TimeInQPC
+TimeInSeconds
+tLff
+U+e^[
+u0HcH<
+ueLw!
+UM_SET_TARGET_PROCESS
+UnhandledExceptionFilter
+Uninstalling active instance of PresentMonDataProvider
+UnmapViewOfFile
+USER32.dll
+UsW\
+uTL+
+uxHc
+VCRUNTIME140_1.dll
+VCRUNTIME140.dll
+WaitForSingleObject
+WATAUAVAWH
+Watchdog detected spawned console application termination, respawning
+Ww5]
+WZZYm
+x AVH
+yhAn
+zS]k{R%
+zSGk{R*
+zSRich)

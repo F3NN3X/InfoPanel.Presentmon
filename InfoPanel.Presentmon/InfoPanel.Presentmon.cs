@@ -8,49 +8,26 @@ using InfoPanel.Presentmon.Services;
 
 namespace InfoPanel.Presentmon
 {
-    /// <summary>
-    /// InfoPanel plugin for monitoring FPS and performance metrics using PresentMon executables
-    /// Version 2.0.0 - Refactored to use executable-based integration similar to RTSS approach
-    /// </summary>
     public class IPFpsPlugin : BasePlugin, IDisposable
     {
-        #region Sensors
         private readonly PluginSensor _fpsSensor = new("fps", "Frames Per Second", 0, "FPS");
         private readonly PluginSensor _frameTimeSensor = new("frame time", "Frame Time", 0, "ms");
-        private readonly PluginSensor _gpuLatencySensor = new("gpu latency", "GPU Latency", 0, "ms");
-        private readonly PluginSensor _gpuTimeSensor = new("gpu time", "GPU Time", 0, "ms");
-        private readonly PluginSensor _gpuBusySensor = new("gpu busy", "GPU Busy", 0, "ms");
-        private readonly PluginSensor _gpuWaitSensor = new("gpu wait", "GPU Wait", 0, "ms");
-        private readonly PluginSensor _displayLatencySensor = new("display latency", "Display Latency", 0, "ms");
-        private readonly PluginSensor _cpuBusySensor = new("cpu busy", "CPU Busy", 0, "ms");
-        private readonly PluginSensor _cpuWaitSensor = new("cpu wait", "CPU Wait", 0, "ms");
-        private readonly PluginSensor _gpuUtilizationSensor = new("gpu utilization", "GPU Utilization", 0, "%");
         private readonly PluginSensor _onePercentLowSensor = new("1% low", "1% Low FPS", 0, "FPS");
-        private readonly PluginSensor _zeroPointOnePercentLowSensor = new("0.1% low", "0.1% Low FPS", 0, "FPS");
         private readonly PluginText _windowTitle = new("windowtitle", "Currently Capturing", "Nothing to capture");
-        #endregion
 
-        #region Services
         private readonly PresentMonService _presentMonService;
         private readonly FullscreenDetectionService _fullscreenDetectionService;
-        private readonly FrameProcessingConfig _config;
-        #endregion
 
-        #region State
-        private CancellationTokenSource? _monitoringCancellationTokenSource;
+        private CancellationTokenSource? _monitoringCts;
         private Task? _monitoringTask;
-        private MonitoringState _currentState = new();
+        private MonitoringState? _currentState;
         private bool _disposed = false;
-        #endregion
 
         public IPFpsPlugin()
-            : base("fps-plugin", "PresentMon FPS", "Real-time FPS and performance monitoring using PresentMon executables - v2.0.0")
+            : base("presentmon", "PresentMon FPS", "Real-time FPS monitoring using PresentMon 2.3.1 - v2.0.0")
         {
-            _config = new FrameProcessingConfig();
-            _presentMonService = new PresentMonService(_config);
+            _presentMonService = new PresentMonService();
             _fullscreenDetectionService = new FullscreenDetectionService();
-            
-            // Subscribe to metrics updates
             _presentMonService.MetricsUpdated += OnMetricsUpdated;
         }
 
@@ -59,261 +36,141 @@ namespace InfoPanel.Presentmon
 
         public override void Initialize()
         {
-            Console.WriteLine("Initializing IPFpsPlugin v2.0.0...");
-            
-            try
-            {
-                Console.WriteLine("🔧 Step 1: Testing PresentMon executable accessibility...");
-                Console.WriteLine("✅ PresentMon executable access test completed");
-                
-                Console.WriteLine("🔧 Step 2: Starting monitoring task...");
-                
-                // Start monitoring task
-                _monitoringCancellationTokenSource = new CancellationTokenSource();
-                _monitoringTask = Task.Run(() => StartMonitoringLoopAsync(_monitoringCancellationTokenSource.Token));
-                
-                Console.WriteLine("✅ Plugin initialized successfully");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Plugin initialization failed: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
-                throw; // Re-throw to let InfoPanel know initialization failed
-            }
+            Console.WriteLine("Initializing PresentMon FPS Plugin v2.0.0...");
+            Console.WriteLine("Starting monitoring task...");
+
+            _monitoringCts = new CancellationTokenSource();
+            _monitoringTask = Task.Run(() => MonitoringLoopAsync(_monitoringCts.Token));
+
+            Console.WriteLine("Plugin initialized successfully");
         }
 
-        public override void Update()
+        private async Task MonitoringLoopAsync(CancellationToken cancellationToken)
         {
-            // Sensor updates are handled by the PresentMonService via events
-            // This method intentionally left empty
-        }
-
-        public override Task UpdateAsync(CancellationToken cancellationToken)
-        {
-            // All updates are handled asynchronously by the monitoring loop
-            return Task.CompletedTask;
-        }
-
-        #region Plugin Interface Implementation
-        public override void Load(List<IPluginContainer> containers)
-        {
-            var container = new PluginContainer("FPS");
-            container.Entries.Add(_fpsSensor);
-            container.Entries.Add(_frameTimeSensor);
-            container.Entries.Add(_gpuLatencySensor);
-            container.Entries.Add(_gpuTimeSensor);
-            container.Entries.Add(_gpuBusySensor);
-            container.Entries.Add(_gpuWaitSensor);
-            container.Entries.Add(_displayLatencySensor);
-            container.Entries.Add(_cpuBusySensor);
-            container.Entries.Add(_cpuWaitSensor);
-            container.Entries.Add(_gpuUtilizationSensor);
-            container.Entries.Add(_onePercentLowSensor);
-            container.Entries.Add(_zeroPointOnePercentLowSensor);
-            container.Entries.Add(_windowTitle);
-            containers.Add(container);
-            Console.WriteLine("Sensors loaded into UI.");
-        }
-
-        public override void Close()
-        {
-            Console.WriteLine("IPFpsPlugin Close() called");
-            Dispose();
-        }
-        #endregion
-
-        #region Monitoring Loop
-        private async Task StartMonitoringLoopAsync(CancellationToken cancellationToken)
-        {
-            Console.WriteLine("Starting monitoring loop...");
+            Console.WriteLine("Monitoring loop started");
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    await MonitoringCycleAsync(cancellationToken);
-                    await Task.Delay(1000, cancellationToken); // Check for new processes every second
-                }
-                catch (OperationCanceledException)
-                {
-                    break;
+                    var detectedState = await _fullscreenDetectionService.DetectFullscreenProcessAsync();
+
+                    if (detectedState != null && ShouldSwitchProcess(detectedState))
+                    {
+                        Console.WriteLine($"Switching to: {detectedState.ProcessName} (PID: {detectedState.ProcessId})");
+
+                        if (_currentState?.IsMonitoring == true)
+                        {
+                            await _presentMonService.StopMonitoringAsync();
+                        }
+
+                        bool success = await _presentMonService.OpenSessionAsync(
+                            detectedState.ProcessId, 
+                            detectedState.ProcessName);
+
+                        if (success)
+                        {
+                            _currentState = detectedState;
+                            _currentState.IsMonitoring = true;
+                            _windowTitle.Value = detectedState.WindowTitle;
+                        }
+                    }
+                    else if (_currentState?.IsMonitoring == true)
+                    {
+                        bool isValid = await _fullscreenDetectionService.IsProcessValidAsync(_currentState.ProcessId);
+                        if (!isValid)
+                        {
+                            Console.WriteLine($"Process {_currentState.ProcessId} is no longer valid");
+                            await _presentMonService.StopMonitoringAsync();
+                            _currentState.IsMonitoring = false;
+                            _windowTitle.Value = "Nothing to capture";
+                            ResetSensors();
+                        }
+                    }
+
+                    await Task.Delay(1000, cancellationToken);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error in monitoring loop: {ex.Message}");
-                    await Task.Delay(5000, cancellationToken); // Wait longer on error
+                    await Task.Delay(5000, cancellationToken);
                 }
             }
-            
-            Console.WriteLine("Monitoring loop stopped");
         }
 
-        private async Task MonitoringCycleAsync(CancellationToken cancellationToken)
+        private bool ShouldSwitchProcess(MonitoringState newState)
         {
-            // Check if current process is still valid
-            if (_currentState.IsMonitoring && _currentState.ProcessId != 0)
-            {
-                bool processValid = await _fullscreenDetectionService.IsProcessValidAsync(_currentState.ProcessId);
-                if (!processValid)
-                {
-                    Console.WriteLine($"Process {_currentState.ProcessId} ({_currentState.ProcessName}) is no longer valid");
-                    await StopMonitoringCurrentProcessAsync();
-                }
-                else
-                {
-                    // Update window title periodically
-                    string newTitle = await _fullscreenDetectionService.GetProcessWindowTitleAsync(_currentState.ProcessId);
-                    if (!string.IsNullOrWhiteSpace(newTitle) && newTitle != _currentState.WindowTitle)
-                    {
-                        _currentState.WindowTitle = newTitle;
-                        _windowTitle.Value = newTitle;
-                    }
-                    return; // Still monitoring current process
-                }
-            }
-
-            // Look for new fullscreen process
-            var detectedState = await _fullscreenDetectionService.DetectFullscreenProcessAsync();
-            if (detectedState != null && detectedState.ProcessId != _currentState.ProcessId)
-            {
-                Console.WriteLine($"Switching to new process: {detectedState.ProcessName} (PID: {detectedState.ProcessId})");
-                await StartMonitoringProcessAsync(detectedState);
-            }
-            else if (detectedState == null && _currentState.IsMonitoring)
-            {
-                Console.WriteLine("No fullscreen process detected, stopping monitoring");
-                await StopMonitoringCurrentProcessAsync();
-            }
+            return _currentState == null || 
+                   _currentState.ProcessId != newState.ProcessId || 
+                   !_currentState.IsMonitoring;
         }
 
-        private async Task StartMonitoringProcessAsync(MonitoringState newState)
+        private void OnMetricsUpdated(object? sender, FrameData frameData)
         {
-            // Stop current monitoring if active
-            if (_currentState.IsMonitoring)
-            {
-                await StopMonitoringCurrentProcessAsync();
-            }
-
-            // Start new session
-            bool sessionOpened = await _presentMonService.OpenSessionAsync(newState.ProcessId, newState.ProcessName);
-            if (sessionOpened)
-            {
-                _currentState = newState;
-                _currentState.IsMonitoring = true;
-                _currentState.SessionStarted = DateTime.UtcNow;
-                
-                _windowTitle.Value = _currentState.WindowTitle;
-                
-                Console.WriteLine($"Successfully started monitoring {_currentState.ProcessName} (PID: {_currentState.ProcessId})");
-            }
-            else
-            {
-                Console.WriteLine($"Failed to start monitoring {newState.ProcessName} (PID: {newState.ProcessId})");
-                ResetSensorsToDefault();
-            }
+            _fpsSensor.Value = frameData.Fps;
+            _frameTimeSensor.Value = frameData.FrameTimeMs;
+            _onePercentLowSensor.Value = frameData.OnePercentLowFps;
         }
 
-        private async Task StopMonitoringCurrentProcessAsync()
-        {
-            if (_currentState.IsMonitoring)
-            {
-                Console.WriteLine($"Stopping monitoring of {_currentState.ProcessName} (PID: {_currentState.ProcessId})");
-                await _presentMonService.StopMonitoringAsync();
-            }
-
-            _currentState.Reset();
-            _windowTitle.Value = _currentState.WindowTitle;
-            ResetSensorsToDefault();
-        }
-        #endregion
-
-        #region Event Handlers
-        private void OnMetricsUpdated(object? sender, FrameMetrics metrics)
-        {
-            try
-            {
-                // Update all sensors with new metrics
-                _fpsSensor.Value = metrics.AverageFps;
-                _frameTimeSensor.Value = metrics.AverageFrameTime;
-                _gpuLatencySensor.Value = metrics.AverageGpuLatency;
-                _gpuTimeSensor.Value = metrics.AverageGpuTime;
-                _gpuBusySensor.Value = metrics.AverageGpuBusy;
-                _gpuWaitSensor.Value = metrics.AverageGpuWait;
-                _displayLatencySensor.Value = metrics.AverageDisplayLatency;
-                _cpuBusySensor.Value = metrics.AverageCpuBusy;
-                _cpuWaitSensor.Value = metrics.AverageCpuWait;
-                _gpuUtilizationSensor.Value = metrics.GpuUtilization;
-                _onePercentLowSensor.Value = metrics.OnePercentLowFps;
-                _zeroPointOnePercentLowSensor.Value = metrics.ZeroPointOnePercentLowFps;
-
-                _currentState.LastDataReceived = DateTime.UtcNow;
-                
-                Console.WriteLine($"Updated metrics: FPS={metrics.AverageFps:F1}, FrameTime={metrics.AverageFrameTime:F2}ms, " +
-                                $"1%Low={metrics.OnePercentLowFps:F1}, Frames={metrics.ValidFrameCount}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error updating sensors: {ex.Message}");
-            }
-        }
-        #endregion
-
-        #region Helper Methods
-        private void ResetSensorsToDefault()
+        private void ResetSensors()
         {
             _fpsSensor.Value = 0;
             _frameTimeSensor.Value = 0;
-            _gpuLatencySensor.Value = 0;
-            _gpuTimeSensor.Value = 0;
-            _gpuBusySensor.Value = 0;
-            _gpuWaitSensor.Value = 0;
-            _displayLatencySensor.Value = 0;
-            _cpuBusySensor.Value = 0;
-            _cpuWaitSensor.Value = 0;
-            _gpuUtilizationSensor.Value = 0;
             _onePercentLowSensor.Value = 0;
-            _zeroPointOnePercentLowSensor.Value = 0;
         }
-        #endregion
 
-        #region Disposal
+        public override void Update()
+        {
+        }
+
+        public override Task UpdateAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        public override void Load(List<IPluginContainer> containers)
+        {
+            var container = new PluginContainer("FPS Monitor");
+            container.Entries.Add(_fpsSensor);
+            container.Entries.Add(_frameTimeSensor);
+            container.Entries.Add(_onePercentLowSensor);
+            container.Entries.Add(_windowTitle);
+            containers.Add(container);
+            Console.WriteLine("FPS sensors loaded into UI");
+        }
+
+        public override void Close()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
-            if (!_disposed)
+            if (_disposed) return;
+
+            try
             {
-                Console.WriteLine("Disposing IPFpsPlugin...");
+                Console.WriteLine("Shutting down PresentMon plugin...");
 
-                // Cancel monitoring
-                if (_monitoringCancellationTokenSource != null)
-                {
-                    _monitoringCancellationTokenSource.Cancel();
-                    
-                    if (_monitoringTask != null)
-                    {
-                        try
-                        {
-                            _monitoringTask.Wait(TimeSpan.FromSeconds(5));
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error waiting for monitoring task to complete: {ex.Message}");
-                        }
-                    }
-                    
-                    _monitoringCancellationTokenSource.Dispose();
-                }
+                _monitoringCts?.Cancel();
+                _monitoringTask?.Wait(5000);
 
-                // Dispose services
+                _presentMonService?.StopMonitoringAsync().Wait(5000);
                 _presentMonService?.Dispose();
+                _fullscreenDetectionService?.Dispose();
 
-                // Reset sensors
-                ResetSensorsToDefault();
-                _windowTitle.Value = "Nothing to capture";
+                _monitoringCts?.Dispose();
 
+                Console.WriteLine("Plugin shutdown complete");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during disposal: {ex.Message}");
+            }
+            finally
+            {
                 _disposed = true;
-                Console.WriteLine("IPFpsPlugin disposed successfully");
             }
         }
-        #endregion
     }
 }

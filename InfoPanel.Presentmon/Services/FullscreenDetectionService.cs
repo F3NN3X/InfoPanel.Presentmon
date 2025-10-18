@@ -8,116 +8,26 @@ using Vanara.PInvoke;
 
 namespace InfoPanel.Presentmon.Services
 {
-    /// <summary>
-    /// Service for detecting fullscreen applications
-    /// Uses Win32 APIs to enumerate windows and identify fullscreen processes
-    /// </summary>
-    public class FullscreenDetectionService
+    public delegate bool EnumWindowsProc(HWND hWnd, IntPtr lParam);
+
+    public class FullscreenDetectionService : IDisposable
     {
         private const int GWL_STYLE = -16;
-        private const uint WS_CAPTION = 0x00C00000; // Title bar
-        private const uint WS_THICKFRAME = 0x00040000; // Resizable border
-        private readonly uint _selfPid;
-        
-        // System processes that should be ignored even if they appear fullscreen
-        private readonly string[] _systemProcessBlacklist = new[]
-        {
-            "MicrosoftStartFeedProvider",
-            "TextInputHost",
-            "explorer",
-            "dwm",
-            "winlogon",
-            "csrss",
-            "smss",
-            "wininit",
-            "services",
-            "lsass",
-            "svchost",
-            "taskhost",
-            "taskhostw",
-            "sihost",
-            "StartMenuExperienceHost",
-            "SearchUI",
-            "ShellExperienceHost",
-            "LockApp",
-            "ApplicationFrameHost", // UWP container
-            
-            // PowerToys processes
-            "PowerToys.FancyZones",
-            "PowerToys.ColorPicker",
-            "PowerToys.PowerLauncher",
-            "PowerToys.Awake",
-            "PowerToys.CropAndLock",
-            "PowerToys.FileLocksmith",
-            "PowerToys.ImageResizer",
-            "PowerToys.KeyboardManager",
-            "PowerToys.MeasureTool",
-            "PowerToys.MouseUtils",
-            "PowerToys.Peek",
-            "PowerToys.PowerRename",
-            "PowerToys.QuickAccent",
-            "PowerToys.RegistryPreview",
-            "PowerToys.Run",
-            "PowerToys.ShortcutGuide",
-            "PowerToys.VideoConference",
-            "PowerToys.Workspaces",
-            "PowerToys",
-            
-            // Windows utilities and overlays
-            "Windows.UI.Immersive.dll",
-            "WindowsInternal.ComposableShell.Experiences.TextInput.InputApp",
-            "MicrosoftEdgeWebView2Setup",
-            "SecurityHealthSystray",
-            "SystemSettings",
-            "WinStore.App",
-            "HxOutlook",
-            "HxCalendarAppImm",
-            "Calculator",
-            "ScreenClipping",
-            "ScreenSketch",
-            "PenWorkspace",
-            "GameBarPresenceWriter",
-            "XboxGameBarWidgets",
-            "XboxGameBar",
-            
-            // Antivirus and security overlays
-            "MsMpEng",
-            "SecurityHealthService",
-            "SgrmBroker",
-            "smartscreen",
-            
-            // Graphics driver overlays
-            "nvcontainer",
-            "NVIDIA Share",
-            "NVIDIA GeForce Experience",
-            "RadeonSoftware",
-            "igfxEM",
-            "igfxHK",
-            "igfxTray",
-            
-            // System monitoring and diagnostic tools
-            "perfmon",
-            "taskmgr",
-            "mmc",
-            "eventvwr",
-            "resmon",
-            "msinfo32",
-            "dxdiag"
+        private const uint WS_CAPTION = 0x00C00000;
+        private const uint WS_THICKFRAME = 0x00040000;
+
+        private readonly string[] _systemProcessBlacklist = {
+            "dwm", "winlogon", "csrss", "explorer", "taskmgr", "chrome", "firefox", 
+            "msedge", "discord", "steam", "epicgameslauncher", "infopanel"
         };
 
-        public delegate bool EnumWindowsProc(HWND hWnd, IntPtr lParam);
+        private readonly uint _selfPid;
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowLong(HWND hWnd, int nIndex);
 
         [DllImport("user32.dll")]
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetClassName(HWND hWnd, StringBuilder lpClassName, int nMaxCount);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetClientRect(HWND hWnd, out Vanara.PInvoke.RECT lpRect);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern int GetWindowText(HWND hWnd, StringBuilder lpString, int nMaxCount);
@@ -130,251 +40,99 @@ namespace InfoPanel.Presentmon.Services
             _selfPid = (uint)Process.GetCurrentProcess().Id;
         }
 
-        /// <summary>
-        /// Detects the currently active fullscreen process
-        /// </summary>
-        /// <returns>MonitoringState with detected process information, or null if none found</returns>
-        public async Task<MonitoringState?> DetectFullscreenProcessAsync()
+        public Task<MonitoringState?> DetectFullscreenProcessAsync()
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 MonitoringState? detectedState = null;
-
-                bool EnumWindowCallback(HWND hWnd, IntPtr lParam)
+                EnumWindows((hWnd, lParam) =>
                 {
                     try
                     {
-                        // Get window style
-                        uint style = GetWindowLong(hWnd, GWL_STYLE);
-                        
-                        // Check if window is fullscreen (no caption, no thick frame)
-                        bool isFullscreen = (style & WS_CAPTION) == 0 && (style & WS_THICKFRAME) == 0;
-                        
-                        if (!isFullscreen)
-                            return true; // Continue enumeration
-
-                        // Get window rectangle
-                        if (!GetClientRect(hWnd, out var rect))
-                            return true;
-
-                        // Check if window covers significant screen area (basic fullscreen detection)
-                        int width = rect.right - rect.left;
-                        int height = rect.bottom - rect.top;
-                        
-                        if (width < 800 || height < 600) // Minimum reasonable fullscreen size
-                            return true;
-
-                        // Get process ID
-                        GetWindowThreadProcessId(hWnd, out uint processId);
-                        
-                        if (processId == 0 || processId == _selfPid)
-                            return true; // Skip invalid or self PID
-
-                        // Get process information
-                        try
+                        if (IsFullscreenWindow(hWnd))
                         {
-                            using var process = Process.GetProcessById((int)processId);
-                            string processName = process.ProcessName;
-                            
-                            // Skip system processes that should be ignored
-                            if (Array.Exists(_systemProcessBlacklist, p => 
-                                string.Equals(p, processName, StringComparison.OrdinalIgnoreCase)))
+                            GetWindowThreadProcessId(hWnd, out uint pid);
+                            if (pid != _selfPid && !IsBlacklistedProcess(pid))
                             {
-                                Console.WriteLine($"Skipping blacklisted system process: {processName} (PID: {processId})");
-                                return true; // Continue enumeration
+                                var processName = GetProcessName(pid);
+                                var windowTitle = GetWindowTitle(hWnd);
+                                if (!string.IsNullOrEmpty(processName))
+                                {
+                                    detectedState = new MonitoringState
+                                    {
+                                        ProcessId = pid,
+                                        ProcessName = processName,
+                                        WindowTitle = windowTitle ?? processName,
+                                        IsMonitoring = false
+                                    };
+                                    return false;
+                                }
                             }
-                            
-                            // Additional service detection - check for common service characteristics
-                            if (IsLikelySystemService(process, processName))
-                            {
-                                Console.WriteLine($"Skipping detected system service: {processName} (PID: {processId})");
-                                return true; // Continue enumeration
-                            }
-                            
-                            // Get window title
-                            var titleBuilder = new StringBuilder(256);
-                            GetWindowText(hWnd, titleBuilder, titleBuilder.Capacity);
-                            string windowTitle = titleBuilder.ToString();
-                            
-                            if (string.IsNullOrWhiteSpace(windowTitle))
-                                windowTitle = processName;
-
-                            Console.WriteLine($"Detected fullscreen process: {processName} (PID: {processId}) - {windowTitle}");
-                            
-                            detectedState = new MonitoringState
-                            {
-                                ProcessId = processId,
-                                ProcessName = processName,
-                                WindowTitle = windowTitle,
-                                IsMonitoring = false,
-                                SessionStarted = DateTime.UtcNow
-                            };
-                            
-                            return false; // Stop enumeration - found our target
-                        }
-                        catch (ArgumentException)
-                        {
-                            // Process no longer exists
-                            Console.WriteLine($"Process {processId} no longer exists");
-                            return true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error getting process info for PID {processId}: {ex.Message}");
-                            return true;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error in window enumeration callback: {ex.Message}");
-                        return true; // Continue enumeration
-                    }
-                }
-
-                try
-                {
-                    EnumWindows(EnumWindowCallback, IntPtr.Zero);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error enumerating windows: {ex.Message}");
-                }
-
-                if (detectedState == null)
-                {
-                    Console.WriteLine("No fullscreen process detected");
-                }
-
+                    catch { }
+                    return true;
+                }, IntPtr.Zero);
                 return detectedState;
             });
         }
 
-        /// <summary>
-        /// Checks if a specific process is still valid and accessible
-        /// </summary>
-        /// <param name="processId">Process ID to check</param>
-        /// <returns>True if process exists and is accessible</returns>
-        public async Task<bool> IsProcessValidAsync(uint processId)
+        public Task<bool> IsProcessValidAsync(uint pid)
         {
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 try
                 {
-                    using var process = Process.GetProcessById((int)processId);
+                    using var process = Process.GetProcessById((int)pid);
                     return !process.HasExited;
                 }
-                catch (ArgumentException)
-                {
-                    // Process doesn't exist
-                    return false;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error checking process {processId}: {ex.Message}");
-                    return false;
-                }
+                catch { return false; }
             });
         }
 
-        /// <summary>
-        /// Gets the window title for a specific process
-        /// </summary>
-        /// <param name="processId">Process ID</param>
-        /// <returns>Window title or process name if title unavailable</returns>
-        public async Task<string> GetProcessWindowTitleAsync(uint processId)
-        {
-            return await Task.Run(() =>
-            {
-                try
-                {
-                    using var process = Process.GetProcessById((int)processId);
-                    
-                    // Try to get main window title
-                    if (!string.IsNullOrWhiteSpace(process.MainWindowTitle))
-                    {
-                        return process.MainWindowTitle;
-                    }
-                    
-                    // Fallback to process name
-                    return process.ProcessName;
-                }
-                catch (ArgumentException)
-                {
-                    return "Process not found";
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error getting window title for PID {processId}: {ex.Message}");
-                    return "Unknown";
-                }
-            });
-        }
-
-        /// <summary>
-        /// Determines if a process is likely a system service based on various characteristics
-        /// </summary>
-        /// <param name="process">The process to check</param>
-        /// <param name="processName">The process name</param>
-        /// <returns>True if the process appears to be a system service</returns>
-        private static bool IsLikelySystemService(Process process, string processName)
+        private bool IsFullscreenWindow(HWND hWnd)
         {
             try
             {
-                // Check for common service naming patterns
-                var servicePrefixes = new[] { "Microsoft", "Windows", "System", "Service", "Host", "Runtime", "Background" };
-                var serviceSuffixes = new[] { "Service", "Host", "Runtime", "Background", "Helper", "Manager", "Agent", "Daemon" };
-                
-                // Check if process name contains service indicators
-                foreach (var prefix in servicePrefixes)
-                {
-                    if (processName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
-                
-                foreach (var suffix in serviceSuffixes)
-                {
-                    if (processName.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
-                
-                // Check if process runs from system directories
-                try
-                {
-                    string processPath = process.MainModule?.FileName ?? "";
-                    var systemPaths = new[]
-                    {
-                        @"C:\Windows\System32",
-                        @"C:\Windows\SysWOW64", 
-                        @"C:\Program Files\Windows",
-                        @"C:\Program Files (x86)\Windows",
-                        @"C:\Windows\SystemApps",
-                        @"C:\Program Files\WindowsApps"
-                    };
-                    
-                    foreach (var systemPath in systemPaths)
-                    {
-                        if (processPath.StartsWith(systemPath, StringComparison.OrdinalIgnoreCase))
-                            return true;
-                    }
-                }
-                catch
-                {
-                    // Ignore access denied exceptions for system processes
-                }
-                
-                // Check if process has no main window or has invisible window characteristics
-                if (process.MainWindowHandle == IntPtr.Zero && string.IsNullOrEmpty(process.MainWindowTitle))
-                {
-                    return true;
-                }
-                
-                return false;
+                uint style = GetWindowLong(hWnd, GWL_STYLE);
+                return (style & WS_CAPTION) == 0 || (style & WS_THICKFRAME) == 0;
             }
-            catch
-            {
-                // If we can't determine, err on the side of caution and don't filter
-                return false;
-            }
+            catch { return false; }
         }
+
+        private bool IsBlacklistedProcess(uint pid)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+                var processName = process.ProcessName.ToLowerInvariant();
+                return Array.Exists(_systemProcessBlacklist, name =>
+                    processName.Contains(name, StringComparison.OrdinalIgnoreCase));
+            }
+            catch { return true; }
+        }
+
+        private string? GetProcessName(uint pid)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+                return process.ProcessName;
+            }
+            catch { return null; }
+        }
+
+        private string? GetWindowTitle(HWND hWnd)
+        {
+            try
+            {
+                var sb = new StringBuilder(256);
+                int length = GetWindowText(hWnd, sb, sb.Capacity);
+                return length > 0 ? sb.ToString() : null;
+            }
+            catch { return null; }
+        }
+
+        public void Dispose() { }
     }
 }

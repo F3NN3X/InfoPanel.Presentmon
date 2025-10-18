@@ -1,0 +1,427 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using InfoPanel.Plugins;
+using Vanara.PInvoke;
+
+namespace InfoPanel.Presentmon
+{
+    public static class ProcessExtensions
+    {
+        public static Task WaitForExitAsync(this Process process, CancellationToken cancellationToken = default)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            process.EnableRaisingEvents = true;
+            process.Exited += (s, e) => tcs.TrySetResult(true);
+            if (cancellationToken != default)
+                cancellationToken.Register(() => tcs.TrySetCanceled());
+            if (process.HasExited)
+                tcs.TrySetResult(true);
+            return tcs.Task;
+        }
+    }
+
+    public delegate bool EnumWindowsProc(HWND hWnd, IntPtr lParam);
+
+    /// <summary>
+    /// InfoPanel plugin for monitoring FPS using PresentMon 2.3.1 executable
+    /// Based on proven working patterns from old-version-working.md
+    /// </summary>
+    public class IPFpsPlugin : BasePlugin, IDisposable
+    {
+        // Sensors - simplified to core FPS metrics
+        private readonly PluginSensor _fpsSensor = new("fps", "Frames Per Second", 0, "FPS");
+        private readonly PluginSensor _frameTimeSensor = new("frame time", "Frame Time", 0, "ms");
+        private readonly PluginSensor _onePercentLowSensor = new("1% low", "1% Low FPS", 0, "FPS");
+        private readonly PluginText _windowTitle = new("windowtitle", "Currently Capturing", "Nothing to capture");
+
+        // Process monitoring
+        private Process? _presentMonProcess;
+        private CancellationTokenSource? _cts;
+        private Task? _monitoringTask;
+        private uint _currentPid;
+        private readonly uint _selfPid;
+        private volatile bool _isMonitoring;
+        private readonly List<float> _frameTimes = new();
+        private const int MaxFrameSamples = 1000;
+        private string? _currentSessionName;
+
+        // Win32 constants for fullscreen detection
+        private const int GWL_STYLE = -16;
+        private const uint WS_CAPTION = 0x00C00000;
+        private const uint WS_THICKFRAME = 0x00040000;
+
+        // System process blacklist - processes to ignore
+        private readonly string[] _systemProcessBlacklist = {
+            "dwm", "winlogon", "csrss", "smss", "wininit", "services", "lsass", "svchost", "spoolsv",
+            "explorer", "taskmgr", "mmc", "dllhost", "rundll32", "conhost", "audiodg", "winamp",
+            "wmplayer", "vlc", "chrome", "firefox", "edge", "notepad", "calc", "regedit"
+        };
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowLong(HWND hWnd, int nIndex);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowText(HWND hWnd, StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(HWND hWnd, out uint lpdwProcessId);
+
+        public IPFpsPlugin()
+            : base("presentmon", "PresentMon FPS", "Real-time FPS monitoring using PresentMon 2.3.1 - v2.0.0")
+        {
+            _selfPid = (uint)Process.GetCurrentProcess().Id;
+        }
+
+        public override string? ConfigFilePath => null;
+        public override TimeSpan UpdateInterval => TimeSpan.FromSeconds(1);
+
+        public override void Initialize()
+        {
+            Console.WriteLine("Initializing PresentMon FPS Plugin v2.0.0...");
+            Console.WriteLine("🔧 Step 1: Testing PresentMon executable accessibility...");
+            
+            var exePath = GetPresentMonPath();
+            if (!File.Exists(exePath))
+            {
+                Console.WriteLine($"❌ PresentMon executable not found at: {exePath}");
+                throw new FileNotFoundException("PresentMon executable not found");
+            }
+            
+            Console.WriteLine("✅ PresentMon executable access test completed");
+            Console.WriteLine("🔧 Step 2: Starting monitoring task...");
+            
+            _cts = new CancellationTokenSource();
+            _monitoringTask = Task.Run(() => StartMonitoringLoopAsync(_cts.Token));
+            Console.WriteLine("✅ Plugin initialized successfully");
+        }
+
+        private string GetPresentMonPath()
+        {
+            var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return Path.Combine(assemblyDir!, "PresentMonDataProvider", "PresentMon-2.3.1-x64-DLSS4.exe");
+        }
+
+        private async Task StartMonitoringLoopAsync(CancellationToken cancellationToken)
+        {
+            Console.WriteLine("Starting monitoring loop...");
+            
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    uint targetPid = GetFullscreenWindowProcess();
+                    
+                    if (targetPid != 0 && targetPid != _currentPid)
+                    {
+                        // Switch to new process
+                        if (_isMonitoring)
+                        {
+                            Console.WriteLine($"Stopping monitoring of PID {_currentPid}");
+                            await StopPresentMonAsync();
+                        }
+                        
+                        var processName = GetProcessName(targetPid);
+                        if (!string.IsNullOrEmpty(processName))
+                        {
+                            Console.WriteLine($"Starting monitoring of {processName} (PID: {targetPid})");
+                            await StartPresentMonAsync(targetPid, processName);
+                        }
+                    }
+                    else if (targetPid == 0 && _isMonitoring)
+                    {
+                        // No fullscreen window, stop monitoring
+                        Console.WriteLine("No fullscreen window detected, stopping monitoring");
+                        await StopPresentMonAsync();
+                    }
+                    
+                    await Task.Delay(1000, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in monitoring loop: {ex.Message}");
+                    await Task.Delay(5000, cancellationToken);
+                }
+            }
+        }
+
+        private uint GetFullscreenWindowProcess()
+        {
+            uint fullscreenPid = 0;
+            
+            EnumWindows((hWnd, lParam) =>
+            {
+                try
+                {
+                    if (IsFullscreenWindow(hWnd))
+                    {
+                        GetWindowThreadProcessId(hWnd, out uint pid);
+                        if (pid != _selfPid && !IsSystemProcess(pid))
+                        {
+                            fullscreenPid = pid;
+                            return false; // Stop enumeration
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error checking window: {ex.Message}");
+                }
+                return true; // Continue enumeration
+            }, IntPtr.Zero);
+            
+            return fullscreenPid;
+        }
+
+        private bool IsFullscreenWindow(HWND hWnd)
+        {
+            try
+            {
+                uint style = GetWindowLong(hWnd, GWL_STYLE);
+                
+                // Check if window has no caption or thick frame (typical fullscreen indicators)
+                bool hasNoCaptionOrFrame = (style & WS_CAPTION) == 0 || (style & WS_THICKFRAME) == 0;
+                
+                if (!hasNoCaptionOrFrame) return false;
+                
+                // Additional checks could be added here for window size vs screen size
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private bool IsSystemProcess(uint pid)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+                var processName = process.ProcessName.ToLowerInvariant();
+                
+                return Array.Exists(_systemProcessBlacklist, name => 
+                    processName.Contains(name, StringComparison.OrdinalIgnoreCase));
+            }
+            catch
+            {
+                return true; // If we can't access it, assume it's a system process
+            }
+        }
+
+        private string? GetProcessName(uint pid)
+        {
+            try
+            {
+                using var process = Process.GetProcessById((int)pid);
+                return process.ProcessName;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private async Task StartPresentMonAsync(uint pid, string processName)
+        {
+            try
+            {
+                var exePath = GetPresentMonPath();
+                _currentSessionName = $"InfoPanel_{Guid.NewGuid():N}";
+                
+                // Use working arguments from old-version-working.md
+                var arguments = $"--process_id {pid} --output_stdout --terminate_on_proc_exit --stop_existing_session --session_name {_currentSessionName}";
+                
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    StandardOutputEncoding = Encoding.UTF8
+                };
+                
+                _presentMonProcess = Process.Start(startInfo);
+                if (_presentMonProcess == null)
+                {
+                    Console.WriteLine("Failed to start PresentMon process");
+                    return;
+                }
+                
+                _currentPid = pid;
+                _isMonitoring = true;
+                _windowTitle.Value = $"{processName} (PID: {pid})";
+                _frameTimes.Clear();
+                
+                // Start processing output
+                _ = Task.Run(() => ProcessPresentMonOutputAsync(_cts?.Token ?? CancellationToken.None));
+                
+                Console.WriteLine($"Started PresentMon for {processName} (PID: {pid})");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to start PresentMon: {ex.Message}");
+                _isMonitoring = false;
+            }
+        }
+
+        private async Task ProcessPresentMonOutputAsync(CancellationToken cancellationToken)
+        {
+            if (_presentMonProcess?.StandardOutput == null) return;
+            
+            try
+            {
+                string? line;
+                while ((line = await _presentMonProcess.StandardOutput.ReadLineAsync()) != null 
+                       && !cancellationToken.IsCancellationRequested)
+                {
+                    ProcessOutputLine(line);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing PresentMon output: {ex.Message}");
+            }
+        }
+
+        private void ProcessOutputLine(string line)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith("Application,ProcessID"))
+                    return;
+                
+                var columns = line.Split(',');
+                if (columns.Length <= 9) return;
+                
+                // Column 9 is MsBetweenPresents (frame time in ms)
+                if (float.TryParse(columns[9], NumberStyles.Float, CultureInfo.InvariantCulture, out float frameTimeMs))
+                {
+                    if (frameTimeMs > 0 && frameTimeMs < 1000) // Sanity check
+                    {
+                        UpdateMetrics(frameTimeMs);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error parsing PresentMon output: {ex.Message}");
+            }
+        }
+
+        private void UpdateMetrics(float frameTimeMs)
+        {
+            // Add to rolling window
+            _frameTimes.Add(frameTimeMs);
+            if (_frameTimes.Count > MaxFrameSamples)
+            {
+                _frameTimes.RemoveAt(0);
+            }
+            
+            if (_frameTimes.Count == 0) return;
+            
+            // Calculate FPS from frame time
+            float avgFrameTime = _frameTimes.Sum() / _frameTimes.Count;
+            float fps = 1000f / avgFrameTime;
+            
+            // Calculate 1% low (99th percentile worst frames)
+            var sortedFrameTimes = _frameTimes.OrderByDescending(x => x).ToList();
+            int onePercentIndex = Math.Max(0, (int)(_frameTimes.Count * 0.01) - 1);
+            float onePercentLowFrameTime = sortedFrameTimes.ElementAtOrDefault(onePercentIndex);
+            float onePercentLowFps = onePercentLowFrameTime > 0 ? 1000f / onePercentLowFrameTime : 0;
+            
+            // Update sensors
+            _fpsSensor.Value = fps;
+            _frameTimeSensor.Value = avgFrameTime;
+            _onePercentLowSensor.Value = onePercentLowFps;
+            
+            Console.WriteLine($"📊 FPS: {fps:F1}, Frame Time: {avgFrameTime:F2}ms, 1% Low: {onePercentLowFps:F1}");
+        }
+
+        private async Task StopPresentMonAsync()
+        {
+            try
+            {
+                _isMonitoring = false;
+                _currentPid = 0;
+                _windowTitle.Value = "Nothing to capture";
+                
+                if (_presentMonProcess != null && !_presentMonProcess.HasExited)
+                {
+                    _presentMonProcess.Kill();
+                    await _presentMonProcess.WaitForExitAsync();
+                }
+                
+                _presentMonProcess?.Dispose();
+                _presentMonProcess = null;
+                
+                // Reset sensors
+                _fpsSensor.Value = 0;
+                _frameTimeSensor.Value = 0;
+                _onePercentLowSensor.Value = 0;
+                _frameTimes.Clear();
+                
+                Console.WriteLine("PresentMon monitoring stopped");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error stopping PresentMon: {ex.Message}");
+            }
+        }
+
+        public override void Update()
+        {
+            // Data is updated via CSV parsing, no polling needed
+        }
+
+        public override Task UpdateAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        public override void Load(List<IPluginContainer> containers)
+        {
+            var container = new PluginContainer("FPS Monitor");
+            container.Entries.Add(_fpsSensor);
+            container.Entries.Add(_frameTimeSensor);
+            container.Entries.Add(_onePercentLowSensor);
+            container.Entries.Add(_windowTitle);
+            containers.Add(container);
+            Console.WriteLine("FPS sensors loaded into UI.");
+        }
+
+        public override void Close()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (_cts != null)
+            {
+                Console.WriteLine("Shutting down PresentMon plugin...");
+                
+                _cts.Cancel();
+                _monitoringTask?.Wait(5000);
+                
+                StopPresentMonAsync().Wait(5000);
+                
+                _cts.Dispose();
+                Console.WriteLine("PresentMon plugin shutdown complete.");
+            }
+        }
+    }
+}
