@@ -29,7 +29,7 @@
   </PropertyGroup>
 
   <!-- Post-build event commands -->
-  <Target Name="MoveDependencyFiles" AfterTargets="Build">
+  <Target Name="MoveDependencyFiles" AfterTargets="Build" Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(DesignTimeBuild)' != 'true'">
     <ItemGroup>
       <SubdirDLLs Include="$(OutputPath)**\*.dll" Exclude="$(OutputPath)*.dll" />
       <SubdirPDBs Include="$(OutputPath)**\*.pdb" Exclude="$(OutputPath)*.pdb" />
@@ -55,6 +55,28 @@
     <RemoveDir Directories="@(DirectoriesToDelete)" />
     <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
   </Target>
+
+  <Target Name="PublishBridgeService" AfterTargets="MoveDependencyFiles" Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <BridgePublishDir>$([System.IO.Path]::GetFullPath('$(TargetDir)PresentMonBridgeService\'))</BridgePublishDir>
+    </PropertyGroup>
+    <Message Text="Publishing PresentMon Bridge Service to $(BridgePublishDir)" Importance="high" />
+    <RemoveDir Directories="$(BridgePublishDir)" ContinueOnError="true" />
+
+    <MSBuild Projects="..\PresentMon.BridgeService\PresentMon.BridgeService.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);PublishDir=$(BridgePublishDir);RuntimeIdentifier=win-x64;SelfContained=false;UseAppHost=true" />
+
+    <RemoveDir Directories="$(BridgePublishDir)PresentMonBridgeService" ContinueOnError="true" />
+
+    <ItemGroup>
+      <BridgeProviderFiles Include="$(OutputPath)PresentMonDataProvider\**\*.*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(BridgeProviderFiles)"
+          DestinationFiles="@(BridgeProviderFiles->'$(BridgePublishDir)PresentMonDataProvider\%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+
 
   <!-- ZIP packaging for release builds -->
   <Target Name="CreateReleaseZip" AfterTargets="MoveDependencyFiles" Condition="'$(Configuration)' == 'Release'">
@@ -98,6 +120,7 @@
     <PackageReference Include="Vanara.PInvoke.DwmApi" Version="4.0.6" />
     <PackageReference Include="Vanara.PInvoke.Kernel32" Version="4.0.5" />
     <PackageReference Include="Vanara.PInvoke.User32" Version="4.0.5" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -105,6 +128,7 @@
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\PresentMon.BridgeContracts\PresentMon.BridgeContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,16 +8,23 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ServiceProcess;
 using InfoPanel.Presentmon.Models;
 
 namespace InfoPanel.Presentmon.Services
 {
     public class PresentMonService : IDisposable
     {
-        public event EventHandler<FrameData>? MetricsUpdated;
+    public event EventHandler<FrameData>? MetricsUpdated;
 
-        private Process? _presentMonProcess;
-        private CancellationTokenSource? _processCts;
+    private readonly PresentMonBridgeClient _bridgeClient;
+    private bool _bridgeActive;
+    private bool _bridgeServiceEnsured;
+    private readonly SemaphoreSlim _bridgeServiceLock = new(1, 1);
+    private const string BridgeServiceName = "PresentMonBridgeService";
+
+    private Process? _presentMonProcess;
+    private CancellationTokenSource? _processCts;
 
         private readonly List<float> _frameTimes = new();
         private const int MaxFrameSamples = 1000;
@@ -39,6 +46,13 @@ namespace InfoPanel.Presentmon.Services
     private float _lastCpuBusy;
     private float _lastCpuWait;
     private float _lastGpuUtilization;
+
+        public PresentMonService()
+        {
+            _bridgeClient = new PresentMonBridgeClient();
+            _bridgeClient.MetricsReceived += OnBridgeMetricsReceived;
+            _bridgeClient.Disconnected += OnBridgeDisconnected;
+        }
 
         private static readonly string[] FrameTimeColumnCandidates =
         {
@@ -89,6 +103,16 @@ namespace InfoPanel.Presentmon.Services
         {
             try
             {
+                if (!_bridgeActive)
+                {
+                    bool bridgeStarted = await TryStartBridgeSessionAsync(processId, processName).ConfigureAwait(false);
+                    if (bridgeStarted)
+                    {
+                        Console.WriteLine("PresentMon: capturing via bridge service.");
+                        return true;
+                    }
+                }
+
                 var exePath = ResolvePresentMonExecutable(out bool useConsoleBuild);
                 if (string.IsNullOrEmpty(exePath))
                 {
@@ -130,6 +154,12 @@ namespace InfoPanel.Presentmon.Services
                     if (sender is Process proc)
                     {
                         Console.WriteLine($"PresentMon: provider exited (code: {proc.ExitCode})");
+
+                        if (proc.ExitCode == 6)
+                        {
+                            Console.WriteLine("PresentMon: access denied when starting trace session. This typically means the target process is protected by anti-cheat or requires elevated permissions.");
+                            Console.WriteLine("PresentMon: try running InfoPanel as administrator, ensure your user is in the 'Performance Log Users' group, or fall back to a vendor overlay (e.g., RTSS) for this title.");
+                        }
                     }
                     else
                     {
@@ -159,6 +189,26 @@ namespace InfoPanel.Presentmon.Services
             try
             {
                 Console.WriteLine("PresentMon: stop requested.");
+
+                if (_bridgeActive)
+                {
+                    Console.WriteLine("PresentMon: stopping bridge session.");
+                    try
+                    {
+                        using var stopCts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                        await _bridgeClient.StopMonitoringAsync(stopCts.Token).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"PresentMon: bridge stop failed. {ex.Message}");
+                    }
+                    finally
+                    {
+                        _bridgeActive = false;
+                        _bridgeClient.Disconnect();
+                    }
+                }
+
                 _processCts?.Cancel();
 
                 if (_presentMonProcess != null)
@@ -195,6 +245,20 @@ namespace InfoPanel.Presentmon.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"PresentMon: error during stop. {ex.Message}");
+            }
+        }
+
+        private void OnBridgeMetricsReceived(object? sender, FrameData frameData)
+        {
+            MetricsUpdated?.Invoke(this, frameData);
+        }
+
+        private void OnBridgeDisconnected(object? sender, EventArgs e)
+        {
+            if (_bridgeActive)
+            {
+                _bridgeActive = false;
+                Console.WriteLine("PresentMon: bridge connection lost. Next session will retry local provider.");
             }
         }
 
@@ -248,6 +312,238 @@ namespace InfoPanel.Presentmon.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"PresentMon: error reading stderr. {ex.Message}");
+            }
+        }
+
+        private async Task<bool> TryStartBridgeSessionAsync(uint processId, string processName)
+        {
+            try
+            {
+                using var ensureCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+                if (!await EnsureBridgeServiceRunningAsync(ensureCts.Token).ConfigureAwait(false))
+                {
+                    Console.WriteLine("PresentMon: unable to start bridge service. Falling back to local PresentMon.");
+                    return false;
+                }
+
+                using var connectCts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+                if (!await _bridgeClient.ConnectAsync(connectCts.Token).ConfigureAwait(false))
+                {
+                    Console.WriteLine("PresentMon: bridge service unavailable. Falling back to local PresentMon.");
+                    return false;
+                }
+
+                using var startCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                if (await _bridgeClient.StartMonitoringAsync(processId, processName, startCts.Token).ConfigureAwait(false))
+                {
+                    _bridgeActive = true;
+                    return true;
+                }
+
+                Console.WriteLine("PresentMon: bridge rejected start request. Falling back to local PresentMon.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PresentMon: bridge session failed ({ex.Message}). Falling back to local PresentMon.");
+            }
+
+            _bridgeClient.Disconnect(notify: false);
+            _bridgeActive = false;
+            return false;
+        }
+
+        private async Task<bool> EnsureBridgeServiceRunningAsync(CancellationToken cancellationToken)
+        {
+            await _bridgeServiceLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                if (_bridgeServiceEnsured)
+                {
+                    try
+                    {
+                        using var existingController = new ServiceController(BridgeServiceName);
+                        existingController.Refresh();
+                        if (existingController.Status == ServiceControllerStatus.Running)
+                        {
+                            return true;
+                        }
+
+                        Console.WriteLine("PresentMon: bridge service not running, attempting restart.");
+                        _bridgeServiceEnsured = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"PresentMon: unable to query bridge service status. {ex.Message}");
+                        _bridgeServiceEnsured = false;
+                    }
+                }
+
+                var servicePath = GetBridgeServiceExecutablePath();
+                if (string.IsNullOrEmpty(servicePath) || !File.Exists(servicePath))
+                {
+                    Console.WriteLine("PresentMon: bridge service executable not found. Expected at:");
+                    Console.WriteLine("  " + (servicePath ?? "(unknown path)"));
+                    return false;
+                }
+
+                bool serviceExists = false;
+                try
+                {
+                    serviceExists = ServiceController.GetServices()
+                        .Any(s => s.ServiceName.Equals(BridgeServiceName, StringComparison.OrdinalIgnoreCase));
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"PresentMon: failed to enumerate services. {ex.Message}");
+                }
+
+                if (!serviceExists)
+                {
+                    Console.WriteLine($"PresentMon: installing {BridgeServiceName}.");
+                    if (!await RunScCommandAsync($"create {BridgeServiceName} binPath= \"{servicePath}\" start= demand", 15000, cancellationToken).ConfigureAwait(false))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    await RunScCommandAsync($"stop {BridgeServiceName}", 15000, cancellationToken, ignoreErrors: true).ConfigureAwait(false);
+                    await RunScCommandAsync($"config {BridgeServiceName} binPath= \"{servicePath}\" start= demand", 15000, cancellationToken, ignoreErrors: true).ConfigureAwait(false);
+                }
+
+                await RunScCommandAsync($"description {BridgeServiceName} \"InfoPanel PresentMon bridge (LocalSystem)\"", 5000, cancellationToken, ignoreErrors: true).ConfigureAwait(false);
+
+                try
+                {
+                    using var controller = new ServiceController(BridgeServiceName);
+                    controller.Refresh();
+                    if (controller.Status != ServiceControllerStatus.Running)
+                    {
+                        Console.WriteLine($"PresentMon: starting {BridgeServiceName}.");
+                        await RunScCommandAsync($"start {BridgeServiceName}", 15000, cancellationToken, ignoreErrors: true).ConfigureAwait(false);
+
+                        controller.Refresh();
+                        controller.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(15));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"PresentMon: failed while starting {BridgeServiceName}. {ex.Message}");
+                    return false;
+                }
+
+                _bridgeServiceEnsured = true;
+                return true;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PresentMon: error ensuring bridge service. {ex.Message}");
+                return false;
+            }
+            finally
+            {
+                _bridgeServiceLock.Release();
+            }
+        }
+
+        private static string? GetBridgeServiceExecutablePath()
+        {
+            try
+            {
+                var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                if (string.IsNullOrEmpty(assemblyDir))
+                {
+                    return null;
+                }
+
+                return Path.Combine(assemblyDir, "PresentMonBridgeService", "PresentMon.BridgeService.exe");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PresentMon: failed to resolve bridge service path. {ex.Message}");
+                return null;
+            }
+        }
+
+        private static async Task<bool> RunScCommandAsync(string arguments, int timeoutMilliseconds, CancellationToken cancellationToken, bool ignoreErrors = false)
+        {
+            Console.WriteLine($"PresentMon bridge: sc.exe {arguments}");
+
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "sc.exe",
+                    Arguments = arguments,
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+
+            try
+            {
+                if (!process.Start())
+                {
+                    Console.WriteLine("PresentMon: failed to start sc.exe process.");
+                    return false;
+                }
+
+                using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                linkedCts.CancelAfter(TimeSpan.FromMilliseconds(timeoutMilliseconds));
+
+                try
+                {
+                    await process.WaitForExitAsync(linkedCts.Token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    Console.WriteLine($"PresentMon: sc.exe {arguments} timed out.");
+                    try
+                    {
+                        process.Kill(true);
+                    }
+                    catch
+                    {
+                    }
+
+                    return false;
+                }
+
+                var output = await process.StandardOutput.ReadToEndAsync().ConfigureAwait(false);
+                var error = await process.StandardError.ReadToEndAsync().ConfigureAwait(false);
+
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    Console.WriteLine($"PresentMon bridge (sc): {output.Trim()}");
+                }
+
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    Console.WriteLine($"PresentMon bridge (sc err): {error.Trim()}");
+                }
+
+                if (process.ExitCode != 0 && !ignoreErrors)
+                {
+                    Console.WriteLine($"PresentMon: sc.exe exited with code {process.ExitCode} for '{arguments}'.");
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (!ignoreErrors)
+                {
+                    Console.WriteLine($"PresentMon: sc.exe command '{arguments}' failed. {ex.Message}");
+                }
+
+                return false;
             }
         }
 
@@ -524,7 +820,6 @@ namespace InfoPanel.Presentmon.Services
             _columnIndexMap = null;
             _maxColumnIndex = 0;
             _diagnosticLinesLogged = 0;
-            _metricLinesLogged = 0;
             _headerLogged = false;
             _rawLinesLogged = 0;
             _lastGpuLatency = 0f;
@@ -764,6 +1059,10 @@ namespace InfoPanel.Presentmon.Services
         {
             StopMonitoringAsync().Wait(2000);
             _processCts?.Dispose();
+            _bridgeClient.MetricsReceived -= OnBridgeMetricsReceived;
+            _bridgeClient.Disconnected -= OnBridgeDisconnected;
+            _bridgeClient.Dispose();
+            _bridgeServiceLock.Dispose();
         }
     }
 }

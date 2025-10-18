@@ -20,8 +20,8 @@ Warning: Sentry option 'Debug' is set to true while Environment is production. B
   Debug: Persistence directory is not set, returning.
   Debug: Created directory for installation ID file (C:\Users\joransrb\AppData\Local\Sentry\469550BD7904070149D93D658A87F9B29DE566D7).
   Debug: Resolved installation ID 'bf7c523b-77d4-463d-bff9-93c7284a7493'.
-   Info: Started new session (SID: 43a403e680eb43fc9ab8ae034ed488c1; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
-  Debug: Persisting session (SID: '43a403e680eb43fc9ab8ae034ed488c1') to a file.
+   Info: Started new session (SID: b8104cb962bf4b9b933c7245e2222086; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
+  Debug: Persisting session (SID: 'b8104cb962bf4b9b933c7245e2222086') to a file.
   Debug: Persistence directory is not set, returning.
   Debug: Enqueuing envelope
    Info: Envelope queued up: ''
@@ -55,34 +55,33 @@ System.Net.Http.HttpRequestException: The requested name is valid, but no data o
    at Sentry.Internal.Http.HttpTransport.SendEnvelopeAsync(Envelope envelope, CancellationToken cancellationToken)
    at Sentry.Internal.BackgroundWorker.DoWorkAsync()
   Debug: De-queueing event
-[14:39:56 INF] Application started. Press Ctrl+C to shut down.
-[14:39:56 INF] Hosting environment: Production
-[14:39:56 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
-[14:39:57 INF] PawniO detected: version 2.0.1.0
-[14:39:57 DBG] LibreMonitor starting initialization
-[14:39:57 DBG] PluginMonitor starting initialization
+[16:01:10 INF] Application started. Press Ctrl+C to shut down.
+[16:01:10 INF] Hosting environment: Production
+[16:01:10 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
+[16:01:11 INF] PawniO detected: version 2.0.1.0
+[16:01:11 DBG] LibreMonitor starting initialization
+[16:01:11 DBG] PluginMonitor starting initialization
 System.Windows.Data Error: 4 : Cannot find source for binding with reference 'ElementName=TitleBar'. BindingExpression:(no path); DataItem=null; target element is 'NavigationView' (Name='RootNavigation'); target property is 'TitleBar' (type 'TitleBar')
-[14:39:57 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
-[14:39:57 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
-[14:39:57 DBG] Reading HWiNFO shared memory
+[16:01:11 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
+[16:01:11 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
+[16:01:11 DBG] Reading HWiNFO shared memory
 [PluginUpdateNotifier] Reading config file from C:\ProgramData\InfoPanel\plugins\InfoPanel.PluginUpdateNotifier\InfoPanel.PluginUpdateNotifier.dll.ini
 [PluginUpdateNotifier] Check interval set to: 4 hours
-[14:39:58 DBG] Typeface cache miss: Arial-Normal-False-False
-[14:39:58 INF] Plugin Clock loaded successfully
-[14:39:58 DBG] Typeface cache miss: Arial-Black-False-False
-[14:39:59 DBG] Reading HWiNFO shared memory
-[14:39:59 INF] Plugin Drive Info loaded successfully
-[14:39:59 INF] Plugin HWiNFO Registry loaded successfully
-[14:39:59 INF] Plugin Network Info loaded successfully
-[14:39:59 INF] Plugin System Info loaded successfully
-[14:39:59 DBG] Plugin HWiNFO Registry task started
-[14:39:59 DBG] Plugin Drive Info task started
-[14:39:59 DBG] Plugin Network Info task started
-[14:39:59 DBG] Plugin System Info task started
+[16:01:11 DBG] Typeface cache miss: Arial-Normal-False-False
+[16:01:11 INF] Plugin Clock loaded successfully
+[16:01:11 DBG] Typeface cache miss: Arial-Black-False-False
+[16:01:12 DBG] Reading HWiNFO shared memory
+[16:01:12 INF] Plugin Drive Info loaded successfully
+[16:01:12 INF] Plugin HWiNFO Registry loaded successfully
+[16:01:12 INF] Plugin Network Info loaded successfully
+[16:01:12 INF] Plugin System Info loaded successfully
+[16:01:13 DBG] Plugin Drive Info task started
+[16:01:13 DBG] Plugin HWiNFO Registry task started
+[16:01:13 DBG] Plugin Network Info task started
+[16:01:13 DBG] Plugin System Info task started
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:00 DBG] Reading HWiNFO shared memory
-[14:40:00 INF] Plugin Volume Info loaded successfully
-[14:40:00 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
+[16:01:14 INF] Plugin Volume Info loaded successfully
+[16:01:14 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
 Weather Plugin: Reading INI file from C:\ProgramData\InfoPanel\plugins\InfoPanel.MetYr\InfoPanel.MetYr.dll.ini
 Weather Plugin: INI file content:
 [Yr Weather Plugin]
@@ -96,7 +95,7 @@ UtcOffsetHours = 2
 ForecastDays = 7
 TemperatureUnit = C
 IconUrl = https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-18 12:40'
+Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-18 14:01'
 Weather Plugin: Validated format 'ddd d MMM' -> 'Sat 18 Oct'
 Weather Plugin: INI Latitude/Longitude invalid or missing, will use geocoding.
 Weather Plugin: Read location from INI: Brevik
@@ -108,43 +107,34 @@ Weather Plugin: Forecast days set to: 7
 Weather Plugin: Temperature unit set to: C
 Weather Plugin: Validating IconUrl: 'https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/'
 Weather Plugin: Testing custom IconUrl: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-[14:40:00 INF] Plugin Weather Info - MET/Yr loaded successfully
-[14:40:00 INF] Plugin Plugin Update Notifier loaded successfully
+[16:01:14 INF] Plugin Weather Info - MET/Yr loaded successfully
+[16:01:14 INF] Plugin Plugin Update Notifier loaded successfully
 Initializing PresentMon FPS Plugin v2.0.0...
 Starting monitoring task...
 Plugin initialized successfully
 FPS sensors loaded into UI
-[14:40:00 INF] Plugin PresentMon FPS loaded successfully
+[16:01:14 DBG] Reading HWiNFO shared memory
 Monitoring loop started
-[14:40:00 INF] Plugin Spotify loaded successfully
-[14:40:00 INF] Plugins loaded in 2699ms
+[16:01:14 INF] Plugin PresentMon FPS loaded successfully
 Weather Plugin: Successfully accessed test SVG icon: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-Switching to: NMS (PID: 14928)
-PresentMon: using console executable at C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMon-2.3.1-x64.exe
-PresentMon: terminating pre-existing session (if any).
-PresentMon: invoking terminate_existing_session helper.
-PresentMon: terminate_existing_session exit code 7.
-PresentMon: launching provider 'C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMon-2.3.1-x64.exe' with args: --process_name "NMS.exe" --output_stdout --stop_existing_session --terminate_on_proc_exit --no_console_stats --set_circular_buffer_size 8192 --qpc_time --session_name PresentMonDataProvider
-PresentMon: provider started for NMS (PID 14928).
-PresentMon: stdout reader started.
-PresentMon: stderr reader started.
-[14:40:00 DBG] Plugin Volume Info task started
-[14:40:00 DBG] Plugin Weather Info - OpenWeatherMap task started
-[14:40:00 DBG] Plugin Weather Info - MET/Yr task started
-Weather Plugin: UpdateAsync called at 2025-10-18T12:40:00Z
-[14:40:00 DBG] Plugin Plugin Update Notifier task started
+[16:01:14 DBG] Plugin Volume Info task started
+[16:01:14 DBG] Plugin Weather Info - OpenWeatherMap task started
+[16:01:14 DBG] Plugin Weather Info - MET/Yr task started
+[16:01:14 DBG] Plugin Plugin Update Notifier task started
+Weather Plugin: UpdateAsync called at 2025-10-18T14:01:14Z
+[16:01:14 DBG] Plugin PresentMon FPS task started
 Weather Plugin: Geocoding URL: https://nominatim.openstreetmap.org/search?q=Brevik&format=json&limit=1
-[14:40:00 DBG] Plugin PresentMon FPS task started
-[14:40:00 DBG] Plugin Spotify task started
-Weather Plugin: Nominatim response: [{"place_id":153934922,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
+[16:01:14 INF] Plugin Spotify loaded successfully
+[16:01:14 INF] Plugins loaded in 2956ms
+Weather Plugin: Nominatim response: [{"place_id":154116111,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
 Weather Plugin: Coordinates set from Nominatim - Lat: 59.3474836, Lon: 18.2043939
 Weather Plugin: Fetching current weather: https://api.met.no/weatherapi/nowcast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T12:38:05Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-18T12:40:00Z","data":{"instant":{"details":{"air_temperature":7.2,"precipitation_rate":0.0,"relative_humidity":...
-Weather Plugin: Current timeseries from nowcast: 2025-10-18T12:40:00Z
+Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T13:58:18Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-18T14:00:00Z","data":{"instant":{"details":{"air_temperature":7.1,"precipitation_rate":0.0,"relative_humidity":...
+Weather Plugin: Current timeseries from nowcast: 2025-10-18T14:00:00Z
 Weather Plugin: Fetching forecast: https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T11:28:06Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
-Weather Plugin: Added forecast row - Date: Sun 19 Oct, Weather: Cloudy, Temp: 8 �C / 1 �C, Precip: 0.0 mm, Wind: 2.9 m/s SW
-Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 9 �C / 3 �C, Precip: 0.0 mm, Wind: 2.8 m/s S
+Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T13:26:48Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
+Weather Plugin: Added forecast row - Date: Sun 19 Oct, Weather: Cloudy, Temp: 8 �C / 1 �C, Precip: 0.0 mm, Wind: 3.2 m/s SW
+Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 10 �C / 2 �C, Precip: 0.0 mm, Wind: 3.0 m/s S
 Weather Plugin: Added forecast row - Date: Tue 21 Oct, Weather: Cloudy, Temp: 11 �C / 8 �C, Precip: 2.6 mm, Wind: 5.0 m/s S
 Weather Plugin: Added forecast row - Date: Wed 22 Oct, Weather: Cloudy, Temp: 11 �C / 10 �C, Precip: 3.3 mm, Wind: 4.6 m/s S
 Weather Plugin: Added forecast row - Date: Thu 23 Oct, Weather: Moderate Rain, Temp: 12 �C / 10 �C, Precip: 3.4 mm, Wind: 3.2 m/s S
@@ -154,128 +144,90 @@ Weather Plugin: Mapped symbol 'clearsky_day' to icon: clear-day, description: Cl
 Weather Plugin: Using custom icon URL: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
 Weather Plugin: Checking SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
 Weather Plugin: Using SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-Weather Plugin: Set data - Temp: 7.2�C, Weather: clearsky, Description: Clear Sky, Icon: clear-day
-Weather Plugin: UTC time: 2025-10-18 12:40:01 UTC
-Weather Plugin: Adjusted time: 2025-10-18 14:40:01 (offset: 2 hours)
-Weather Plugin: Last refreshed set to: 2025-10-18 14:40
-[14:40:01 DBG] Reading HWiNFO shared memory
+Weather Plugin: Set data - Temp: 7.1�C, Weather: clearsky, Description: Clear Sky, Icon: clear-day
+Weather Plugin: UTC time: 2025-10-18 14:01:14 UTC
+Weather Plugin: Adjusted time: 2025-10-18 16:01:14 (offset: 2 hours)
+Weather Plugin: Last refreshed set to: 2025-10-18 16:01
+[16:01:14 DBG] Plugin Spotify task started
+[16:01:15 DBG] Reading HWiNFO shared memory
+[16:01:16 DBG] Reading HWiNFO shared memory
+[16:01:18 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[16:01:19 DBG] Reading HWiNFO shared memory
+[16:01:20 DBG] Reading HWiNFO shared memory
+[16:01:21 INF] LibreHardwareMonitor computer opened in 9544ms
+[16:01:21 DBG] Reading HWiNFO shared memory
+[16:01:23 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[16:01:24 DBG] Reading HWiNFO shared memory
+[16:01:25 DBG] Reading HWiNFO shared memory
+[16:01:27 DBG] Reading HWiNFO shared memory
+Switching to: XboxGameBarWidgets (PID: 37876)
+PresentMon: installing PresentMonBridgeService.
+PresentMon bridge: sc.exe create PresentMonBridgeService binPath= "C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonBridgeService\PresentMon.BridgeService.exe" start= demand
+PresentMon bridge (sc): [SC] CreateService SUCCESS
+PresentMon bridge: sc.exe description PresentMonBridgeService "InfoPanel PresentMon bridge (LocalSystem)"
+PresentMon bridge (sc): [SC] ChangeServiceConfig2 SUCCESS
+PresentMon: starting PresentMonBridgeService.
+PresentMon bridge: sc.exe start PresentMonBridgeService
+PresentMon bridge (sc): SERVICE_NAME: PresentMonBridgeService
+        TYPE               : 10  WIN32_OWN_PROCESS
+        STATE              : 2  START_PENDING
+                                (NOT_STOPPABLE, NOT_PAUSABLE, IGNORES_SHUTDOWN)
+        WIN32_EXIT_CODE    : 0  (0x0)
+        SERVICE_EXIT_CODE  : 0  (0x0)
+        CHECKPOINT         : 0x0
+        WAIT_HINT          : 0x7d0
+        PID                : 44048
+        FLAGS              :
+PresentMon: capturing via bridge service.
+[16:01:28 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[16:01:29 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 50940)
+PresentMon: stop requested.
+PresentMon: stopping bridge session.
+[16:01:31 DBG] Reading HWiNFO shared memory
+PresentMon: invoking terminate_existing_session helper.
+PresentMon: terminate_existing_session exit code 7.
+PresentMon: provider stopped.
+Bridge: disconnected from service.
+PresentMon: bridge rejected start request. Falling back to local PresentMon.
+PresentMon: using console executable at C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMon-2.3.1-x64.exe
+PresentMon: terminating pre-existing session (if any).
+PresentMon: invoking terminate_existing_session helper.
+PresentMon: terminate_existing_session exit code 7.
+PresentMon: launching provider 'C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMon-2.3.1-x64.exe' with args: --process_name "NMS.exe" --output_stdout --stop_existing_session --terminate_on_proc_exit --no_console_stats --set_circular_buffer_size 8192 --qpc_time --session_name PresentMonDataProvider
+PresentMon: provider started for NMS (PID 50940).
+PresentMon: stdout reader started.
+PresentMon: stderr reader started.
+[16:01:32 DBG] Reading HWiNFO shared memory
 PresentMon raw: Application,ProcessID,SwapChainAddress,PresentRuntime,SyncInterval,PresentFlags,AllowsTearing,PresentMode,TimeInQPC,MsBetweenSimulationStart,MsBetweenPresents,MsBetweenDisplayChange,MsInPresentAPI,MsRenderPresentLatency,MsUntilDisplayed,MsPCLatency,CPUStartQPC,MsBetweenAppStart,MsCPUBusy,MsCPUWait,MsGPULatency,MsGPUTime,MsGPUBusy,MsGPUWait,MsAnimationError,AnimationTime,MsAllInputToPhotonLatency,MsClickToPhotonLatency
 PresentMon columns detected (28): Application, ProcessID, SwapChainAddress, PresentRuntime, SyncInterval, PresentFlags, AllowsTearing, PresentMode, TimeInQPC, MsBetweenSimulationStart, MsBetweenPresents, MsBetweenDisplayChange, MsInPresentAPI, MsRenderPresentLatency, MsUntilDisplayed, MsPCLatency, CPUStartQPC, MsBetweenAppStart, MsCPUBusy, MsCPUWait, MsGPULatency, MsGPUTime, MsGPUBusy, MsGPUWait, MsAnimationError, AnimationTime, MsAllInputToPhotonLatency, MsClickToPhotonLatency
-PresentMon metrics: samples=1, avg=6.603ms, fps=151.4, 1pctLow=151.4, 0.1pctLow=151.4
-PresentMon metrics: samples=2, avg=6.592ms, fps=151.7, 1pctLow=151.4, 0.1pctLow=151.4
-PresentMon metrics: samples=3, avg=6.488ms, fps=154.1, 1pctLow=151.4, 0.1pctLow=151.4
-PresentMon metrics: samples=4, avg=6.518ms, fps=153.4, 1pctLow=151.4, 0.1pctLow=151.4
-PresentMon metrics: samples=5, avg=6.709ms, fps=149.1, 1pctLow=133.8, 0.1pctLow=133.8
-[14:40:03 DBG] Reading HWiNFO shared memory
-[14:40:04 DBG] Reading HWiNFO shared memory
+PresentMon metrics: samples=1, avg=18.271ms, fps=54.7, 1pctLow=54.7, 0.1pctLow=54.7
+PresentMon metrics: samples=2, avg=11.689ms, fps=85.6, 1pctLow=54.7, 0.1pctLow=54.7
+PresentMon metrics: samples=3, avg=9.592ms, fps=104.2, 1pctLow=54.7, 0.1pctLow=54.7
+PresentMon metrics: samples=4, avg=8.023ms, fps=124.6, 1pctLow=54.7, 0.1pctLow=54.7
+PresentMon metrics: samples=5, avg=7.832ms, fps=127.7, 1pctLow=54.7, 0.1pctLow=54.7
+[16:01:33 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:05 DBG] Reading HWiNFO shared memory
-[14:40:07 DBG] Reading HWiNFO shared memory
-[14:40:07 INF] LibreHardwareMonitor computer opened in 9594ms
-[14:40:08 DBG] Reading HWiNFO shared memory
-[14:40:09 DBG] Reading HWiNFO shared memory
+PresentMon frame time outside expected range: 1008.057 ms
+[16:01:34 DBG] Reading HWiNFO shared memory
+[16:01:36 DBG] Reading HWiNFO shared memory
+[16:01:37 DBG] Reading HWiNFO shared memory
+[16:01:38 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:10 DBG] Reading HWiNFO shared memory
-[14:40:12 DBG] Reading HWiNFO shared memory
-[14:40:13 DBG] Reading HWiNFO shared memory
-[14:40:14 DBG] Reading HWiNFO shared memory
+[16:01:40 DBG] Reading HWiNFO shared memory
+[16:01:41 DBG] Reading HWiNFO shared memory
+[16:01:42 DBG] Reading HWiNFO shared memory
+[16:01:44 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:16 DBG] Reading HWiNFO shared memory
-[14:40:17 DBG] Reading HWiNFO shared memory
-[14:40:18 DBG] Reading HWiNFO shared memory
-[14:40:20 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:21 DBG] Reading HWiNFO shared memory
-[14:40:22 DBG] Reading HWiNFO shared memory
-[14:40:24 DBG] Reading HWiNFO shared memory
-[14:40:25 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:26 DBG] Reading HWiNFO shared memory
-[14:40:27 DBG] Reading HWiNFO shared memory
-[14:40:29 DBG] Reading HWiNFO shared memory
-[14:40:30 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:31 DBG] Reading HWiNFO shared memory
-[14:40:33 DBG] Reading HWiNFO shared memory
-[14:40:34 DBG] Reading HWiNFO shared memory
-[14:40:35 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:37 DBG] Reading HWiNFO shared memory
-[14:40:38 DBG] Reading HWiNFO shared memory
-[14:40:39 DBG] Reading HWiNFO shared memory
-[14:40:40 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:42 DBG] Reading HWiNFO shared memory
-[14:40:43 DBG] Reading HWiNFO shared memory
-[14:40:44 DBG] Reading HWiNFO shared memory
-[14:40:46 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:47 DBG] Reading HWiNFO shared memory
-PresentMon frame time outside expected range: 1227.339 ms
-[14:40:48 DBG] Reading HWiNFO shared memory
-[14:40:50 DBG] Reading HWiNFO shared memory
-[14:40:51 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:52 DBG] Reading HWiNFO shared memory
-[14:40:54 DBG] Reading HWiNFO shared memory
-[14:40:55 DBG] Reading HWiNFO shared memory
-[14:40:56 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:40:57 DBG] Reading HWiNFO shared memory
-[14:40:59 DBG] Reading HWiNFO shared memory
-[14:41:00 DBG] Reading HWiNFO shared memory
-[14:41:01 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:03 DBG] Reading HWiNFO shared memory
-[14:41:04 DBG] Reading HWiNFO shared memory
-[14:41:05 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:07 DBG] Reading HWiNFO shared memory
-[14:41:08 DBG] Reading HWiNFO shared memory
-[14:41:09 DBG] Reading HWiNFO shared memory
-[14:41:10 DBG] Reading HWiNFO shared memory
-PresentMon frame time outside expected range: 3636.660 ms
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:12 DBG] Reading HWiNFO shared memory
-[14:41:13 DBG] Reading HWiNFO shared memory
-[14:41:14 DBG] Reading HWiNFO shared memory
-[14:41:16 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:17 DBG] Reading HWiNFO shared memory
-[14:41:18 DBG] Reading HWiNFO shared memory
-[14:41:20 DBG] Reading HWiNFO shared memory
-[14:41:21 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:22 DBG] Reading HWiNFO shared memory
-[14:41:24 DBG] Reading HWiNFO shared memory
-[14:41:25 DBG] Reading HWiNFO shared memory
-[14:41:26 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:27 DBG] Reading HWiNFO shared memory
-[14:41:29 DBG] Reading HWiNFO shared memory
-[14:41:30 DBG] Reading HWiNFO shared memory
-[14:41:31 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:33 DBG] Reading HWiNFO shared memory
-[14:41:34 DBG] Reading HWiNFO shared memory
-[14:41:35 DBG] Reading HWiNFO shared memory
-[14:41:37 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:38 DBG] Reading HWiNFO shared memory
-[14:41:39 DBG] Reading HWiNFO shared memory
-[14:41:40 DBG] Reading HWiNFO shared memory
-[14:41:42 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:43 DBG] Reading HWiNFO shared memory
-[14:41:44 DBG] Reading HWiNFO shared memory
-[14:41:46 DBG] Reading HWiNFO shared memory
-[14:41:47 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:48 DBG] Reading HWiNFO shared memory
+[16:01:45 DBG] Reading HWiNFO shared memory
+[16:01:46 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ArgumentException' in System.Diagnostics.Process.dll
-Process 14928 is no longer valid
+Process 50940 is no longer valid
 PresentMon: stop requested.
-PresentMon: request stop (running=True, pid=26104)
+PresentMon: request stop (running=True, pid=14704)
 PresentMon: provider exited (code: -1)
 PresentMon: disposing provider process (exitCode=-1)
 PresentMon: invoking terminate_existing_session helper.
@@ -283,164 +235,111 @@ PresentMon: stdout reader completed.
 PresentMon: stderr reader completed.
 PresentMon: terminate_existing_session exit code 0.
 PresentMon: provider stopped.
-[14:41:50 DBG] Reading HWiNFO shared memory
-[14:41:51 DBG] Reading HWiNFO shared memory
-[14:41:52 DBG] Reading HWiNFO shared memory
+[16:01:48 DBG] Reading HWiNFO shared memory
+[16:01:49 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:54 DBG] Reading HWiNFO shared memory
-[14:41:55 DBG] Reading HWiNFO shared memory
-[14:41:56 DBG] Reading HWiNFO shared memory
-[14:41:57 DBG] Reading HWiNFO shared memory
+[16:01:50 DBG] Reading HWiNFO shared memory
+[16:01:51 DBG] Reading HWiNFO shared memory
+[16:01:53 DBG] Reading HWiNFO shared memory
+[16:01:54 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:41:59 DBG] Reading HWiNFO shared memory
-[14:42:00 DBG] Reading HWiNFO shared memory
-[14:42:01 DBG] Reading HWiNFO shared memory
-[14:42:03 DBG] Reading HWiNFO shared memory
+[16:01:55 DBG] Reading HWiNFO shared memory
+[16:01:57 DBG] Reading HWiNFO shared memory
+[16:01:58 DBG] Reading HWiNFO shared memory
+[16:01:59 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:04 DBG] Reading HWiNFO shared memory
-[14:42:05 DBG] Reading HWiNFO shared memory
-[14:42:07 DBG] Reading HWiNFO shared memory
-[14:42:08 DBG] Reading HWiNFO shared memory
+[16:02:01 DBG] Reading HWiNFO shared memory
+[16:02:02 DBG] Reading HWiNFO shared memory
+[16:02:03 DBG] Reading HWiNFO shared memory
+[16:02:04 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:09 DBG] Reading HWiNFO shared memory
-[14:42:10 DBG] Reading HWiNFO shared memory
-[14:42:12 DBG] Reading HWiNFO shared memory
-[14:42:13 DBG] Reading HWiNFO shared memory
+[16:02:06 DBG] Reading HWiNFO shared memory
+[16:02:07 DBG] Reading HWiNFO shared memory
+[16:02:08 DBG] Reading HWiNFO shared memory
+[16:02:10 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:14 DBG] Reading HWiNFO shared memory
-[14:42:16 DBG] Reading HWiNFO shared memory
-[14:42:17 DBG] Reading HWiNFO shared memory
-[14:42:18 DBG] Reading HWiNFO shared memory
+[16:02:11 DBG] Reading HWiNFO shared memory
+[16:02:12 DBG] Reading HWiNFO shared memory
+[16:02:14 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:19 DBG] Reading HWiNFO shared memory
-[14:42:20 DBG] Reading HWiNFO shared memory
-[14:42:22 DBG] Reading HWiNFO shared memory
-[14:42:23 DBG] Reading HWiNFO shared memory
+[16:02:15 DBG] Reading HWiNFO shared memory
+[16:02:16 DBG] Reading HWiNFO shared memory
+[16:02:18 DBG] Reading HWiNFO shared memory
+[16:02:19 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:24 DBG] Reading HWiNFO shared memory
-[14:42:25 DBG] Reading HWiNFO shared memory
-[14:42:27 DBG] Reading HWiNFO shared memory
-[14:42:28 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:29 DBG] Reading HWiNFO shared memory
-[14:42:31 DBG] Reading HWiNFO shared memory
+[16:02:20 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Switching to: bf6 (PID: 41972)
-PresentMon: using console executable at C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMon-2.3.1-x64.exe
-PresentMon: terminating pre-existing session (if any).
-PresentMon: invoking terminate_existing_session helper.
-PresentMon: terminate_existing_session exit code 7.
-PresentMon: launching provider 'C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMon-2.3.1-x64.exe' with args: --process_name "bf6.exe" --output_stdout --stop_existing_session --terminate_on_proc_exit --no_console_stats --set_circular_buffer_size 8192 --qpc_time --session_name PresentMonDataProvider
-PresentMon: provider started for bf6 (PID 41972).
-PresentMon: stdout reader started.
-PresentMon: stderr reader started.
-PresentMon stderr: error: failed to start trace session: access denied.
-PresentMon: stderr reader completed.
-PresentMon: stdout reader completed.
-PresentMon: provider exited (code: 6)
-[14:42:32 DBG] Reading HWiNFO shared memory
+Switching to: bf6 (PID: 4656)
+PresentMon: capturing via bridge service.
+Bridge: error from service - Access denied launching PresentMon.
+[16:02:21 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:33 DBG] Reading HWiNFO shared memory
+[16:02:23 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+[16:02:24 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:35 DBG] Reading HWiNFO shared memory
+[16:02:25 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:36 DBG] Reading HWiNFO shared memory
+[16:02:27 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:37 DBG] Reading HWiNFO shared memory
+[16:02:28 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:39 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:40 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:41 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:42 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:44 DBG] Reading HWiNFO shared memory
+[16:02:29 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:45 DBG] Reading HWiNFO shared memory
+[16:02:31 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:46 DBG] Reading HWiNFO shared memory
+[16:02:32 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+[16:02:33 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:48 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:49 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:42:50 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:52 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:53 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:54 DBG] Reading HWiNFO shared memory
+[16:02:34 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:55 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:57 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:58 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:42:59 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:43:01 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:02 DBG] Reading HWiNFO shared memory
+[16:02:36 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:03 DBG] Reading HWiNFO shared memory
+[16:02:37 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:05 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[16:02:38 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:06 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:07 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:09 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:10 DBG] Reading HWiNFO shared memory
+[16:02:40 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[16:02:41 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:11 DBG] Reading HWiNFO shared memory
+[16:02:42 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:12 DBG] Reading HWiNFO shared memory
+[16:02:44 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:14 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
-[14:43:15 DBG] Reading HWiNFO shared memory
+[16:02:45 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.ArgumentException' in System.Diagnostics.Process.dll
-Process 41972 is no longer valid
+Process 4656 is no longer valid
 PresentMon: stop requested.
-PresentMon: request stop (running=False, pid=37800)
-PresentMon: disposing provider process (exitCode=6)
+PresentMon: stopping bridge session.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[16:02:46 DBG] Reading HWiNFO shared memory
 PresentMon: invoking terminate_existing_session helper.
+Bridge: disconnected from service.
 PresentMon: terminate_existing_session exit code 7.
 PresentMon: provider stopped.
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[14:43:16 DBG] Reading HWiNFO shared memory
-[14:43:18 DBG] Reading HWiNFO shared memory
-[14:43:19 DBG] Reading HWiNFO shared memory
-[14:43:20 DBG] BeadaPanelTask stopping
-[14:43:20 DBG] TuringPanelTask stopping
-[14:43:20 DBG] LibreMonitor stopping
-[14:43:20 DBG] LibreMonitor task cancelled
-[14:43:20 DBG] Disposing resources for LibreMonitor
-[14:43:20 DBG] LibreMonitor stopped
-[14:43:20 DBG] PluginMonitor stopping
-[14:43:20 DBG] PluginMonitor task cancelled
-[14:43:20 DBG] Disposing resources for PluginMonitor
-[14:43:20 DBG] PluginMonitor stopped
+[16:02:47 DBG] Reading HWiNFO shared memory
+[16:02:49 DBG] Reading HWiNFO shared memory
+[16:02:50 DBG] Reading HWiNFO shared memory
+[16:02:51 DBG] BeadaPanelTask stopping
+[16:02:51 DBG] TuringPanelTask stopping
+[16:02:51 DBG] LibreMonitor stopping
+[16:02:51 DBG] LibreMonitor task cancelled
+[16:02:51 DBG] Disposing resources for LibreMonitor
+[16:02:51 DBG] LibreMonitor stopped
+[16:02:51 DBG] PluginMonitor stopping
+[16:02:51 DBG] PluginMonitor task cancelled
+[16:02:51 DBG] Disposing resources for PluginMonitor
+[16:02:51 DBG] PluginMonitor stopped
    Info: AppDomain process exited: Disposing SDK.
    Info: Disposing the Hub.
   Debug: Successfully flushed all events up to call to FlushAsync.
-The program '[23316] InfoPanel.exe' has exited with code 0 (0x0).
+The program '[41592] InfoPanel.exe' has exited with code 0 (0x0).
