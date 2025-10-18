@@ -103,83 +103,19 @@ namespace InfoPanel.Presentmon.Services
         {
             try
             {
-                if (!_bridgeActive)
+                bool bridgeStarted = await TryStartBridgeSessionAsync(processId, processName).ConfigureAwait(false);
+                if (bridgeStarted)
                 {
-                    bool bridgeStarted = await TryStartBridgeSessionAsync(processId, processName).ConfigureAwait(false);
-                    if (bridgeStarted)
-                    {
-                        Console.WriteLine("PresentMon: capturing via bridge service.");
-                        return true;
-                    }
+                    Console.WriteLine("PresentMon: capturing via bridge service.");
+                    return true;
                 }
 
-                var exePath = ResolvePresentMonExecutable(out bool useConsoleBuild);
-                if (string.IsNullOrEmpty(exePath))
-                {
-                    Console.WriteLine("PresentMon: no executable found in PresentMonDataProvider directory.");
-                    return false;
-                }
-
-                var providerDirectory = Path.GetDirectoryName(exePath)!;
-                Console.WriteLine($"PresentMon: using {(useConsoleBuild ? "console" : "provider")} executable at {exePath}");
-                Console.WriteLine("PresentMon: terminating pre-existing session (if any).");
-                await TerminateExistingSessionAsync(exePath, providerDirectory, useConsoleBuild).ConfigureAwait(false);
-
-                var arguments = BuildLaunchArguments(processId, processName, useConsoleBuild);
-
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = exePath,
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = Encoding.UTF8,
-                    WorkingDirectory = providerDirectory
-                };
-
-                Console.WriteLine($"PresentMon: launching provider '{startInfo.FileName}' with args: {startInfo.Arguments}");
-
-                _presentMonProcess = Process.Start(startInfo);
-                if (_presentMonProcess == null)
-                {
-                    Console.WriteLine("PresentMon: failed to launch provider process.");
-                    return false;
-                }
-
-                _presentMonProcess.EnableRaisingEvents = true;
-                _presentMonProcess.Exited += (sender, _) =>
-                {
-                    if (sender is Process proc)
-                    {
-                        Console.WriteLine($"PresentMon: provider exited (code: {proc.ExitCode})");
-
-                        if (proc.ExitCode == 6)
-                        {
-                            Console.WriteLine("PresentMon: access denied when starting trace session. This typically means the target process is protected by anti-cheat or requires elevated permissions.");
-                            Console.WriteLine("PresentMon: try running InfoPanel as administrator, ensure your user is in the 'Performance Log Users' group, or fall back to a vendor overlay (e.g., RTSS) for this title.");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("PresentMon: provider exited.");
-                    }
-                };
-
-                _frameTimes.Clear();
-                ResetParsingState();
-
-                _processCts = new CancellationTokenSource();
-                _ = Task.Run(() => ProcessOutputAsync(_processCts.Token));
-                _ = Task.Run(() => ProcessErrorOutputAsync(_processCts.Token));
-
-                Console.WriteLine($"PresentMon: provider started for {processName} (PID {processId}).");
-                return true;
+                Console.WriteLine("PresentMon: bridge start failed. No legacy PresentMon fallback is available.");
+                return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"PresentMon: failed to start provider. {ex.Message}");
+                Console.WriteLine($"PresentMon: failed to start bridge session. {ex.Message}");
                 return false;
             }
         }
@@ -209,38 +145,10 @@ namespace InfoPanel.Presentmon.Services
                     }
                 }
 
-                _processCts?.Cancel();
-
-                if (_presentMonProcess != null)
-                {
-                    Console.WriteLine($"PresentMon: request stop (running={!_presentMonProcess.HasExited}, pid={_presentMonProcess.Id})");
-                }
-
-                if (_presentMonProcess != null && !_presentMonProcess.HasExited)
-                {
-                    _presentMonProcess.Kill();
-                    await _presentMonProcess.WaitForExitAsync().ConfigureAwait(false);
-                }
-
-                if (_presentMonProcess != null)
-                {
-                    Console.WriteLine($"PresentMon: disposing provider process (exitCode={_presentMonProcess.ExitCode})");
-                }
-
-                _presentMonProcess?.Dispose();
-                _presentMonProcess = null;
-
-                var exePath = ResolvePresentMonExecutable(out bool useConsoleBuild);
-                if (!string.IsNullOrEmpty(exePath))
-                {
-                    var providerDirectory = Path.GetDirectoryName(exePath)!;
-                    await TerminateExistingSessionAsync(exePath, providerDirectory, useConsoleBuild).ConfigureAwait(false);
-                }
-
                 _frameTimes.Clear();
                 ResetParsingState();
 
-                Console.WriteLine("PresentMon: provider stopped.");
+                Console.WriteLine("PresentMon: bridge session stopped.");
             }
             catch (Exception ex)
             {
@@ -258,7 +166,7 @@ namespace InfoPanel.Presentmon.Services
             if (_bridgeActive)
             {
                 _bridgeActive = false;
-                Console.WriteLine("PresentMon: bridge connection lost. Next session will retry local provider.");
+                Console.WriteLine("PresentMon: bridge connection lost. Next session will attempt to restart the bridge.");
             }
         }
 
@@ -322,14 +230,14 @@ namespace InfoPanel.Presentmon.Services
                 using var ensureCts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
                 if (!await EnsureBridgeServiceRunningAsync(ensureCts.Token).ConfigureAwait(false))
                 {
-                    Console.WriteLine("PresentMon: unable to start bridge service. Falling back to local PresentMon.");
+                    Console.WriteLine("PresentMon: unable to start bridge service.");
                     return false;
                 }
 
                 using var connectCts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
                 if (!await _bridgeClient.ConnectAsync(connectCts.Token).ConfigureAwait(false))
                 {
-                    Console.WriteLine("PresentMon: bridge service unavailable. Falling back to local PresentMon.");
+                    Console.WriteLine("PresentMon: bridge service unavailable.");
                     return false;
                 }
 
@@ -340,11 +248,11 @@ namespace InfoPanel.Presentmon.Services
                     return true;
                 }
 
-                Console.WriteLine("PresentMon: bridge rejected start request. Falling back to local PresentMon.");
+                Console.WriteLine("PresentMon: bridge rejected start request.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"PresentMon: bridge session failed ({ex.Message}). Falling back to local PresentMon.");
+                Console.WriteLine($"PresentMon: bridge session failed ({ex.Message}).");
             }
 
             _bridgeClient.Disconnect(notify: false);

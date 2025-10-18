@@ -784,10 +784,10 @@ public sealed class PresentMonSessionManager
 
         foreach (var candidate in new[]
                  {
+                     "PresentMonDataProvider.exe",
                      "PresentMon-2.3.1-x64.exe",
                      "PresentMon-2.3.1-x64-DLSS4.exe",
-                     "PresentMon-1.10.0-x64.exe",
-                     "PresentMonDataProvider.exe"
+                     "PresentMon-1.10.0-x64.exe"
                  })
         {
             var path = Path.Combine(providerDir, candidate);
