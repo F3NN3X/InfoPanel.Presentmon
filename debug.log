@@ -20,8 +20,8 @@ Warning: Sentry option 'Debug' is set to true while Environment is production. B
   Debug: Persistence directory is not set, returning.
   Debug: Created directory for installation ID file (C:\Users\joransrb\AppData\Local\Sentry\469550BD7904070149D93D658A87F9B29DE566D7).
   Debug: Resolved installation ID 'bf7c523b-77d4-463d-bff9-93c7284a7493'.
-   Info: Started new session (SID: 9d7e9526f8f646dab9aa9a27ef813391; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
-  Debug: Persisting session (SID: '9d7e9526f8f646dab9aa9a27ef813391') to a file.
+   Info: Started new session (SID: 6a3d355bdaf74ad984feece34c0d2874; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
+  Debug: Persisting session (SID: '6a3d355bdaf74ad984feece34c0d2874') to a file.
   Debug: Persistence directory is not set, returning.
   Debug: Enqueuing envelope
    Info: Envelope queued up: ''
@@ -55,34 +55,33 @@ System.Net.Http.HttpRequestException: The requested name is valid, but no data o
    at Sentry.Internal.Http.HttpTransport.SendEnvelopeAsync(Envelope envelope, CancellationToken cancellationToken)
    at Sentry.Internal.BackgroundWorker.DoWorkAsync()
   Debug: De-queueing event
-[12:44:56 INF] Application started. Press Ctrl+C to shut down.
-[12:44:56 INF] Hosting environment: Production
-[12:44:56 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
-[12:44:57 INF] PawniO detected: version 2.0.1.0
-[12:44:57 DBG] LibreMonitor starting initialization
-[12:44:57 DBG] PluginMonitor starting initialization
+[13:21:41 INF] Application started. Press Ctrl+C to shut down.
+[13:21:41 INF] Hosting environment: Production
+[13:21:41 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
+[13:21:42 INF] PawniO detected: version 2.0.1.0
+[13:21:42 DBG] LibreMonitor starting initialization
+[13:21:42 DBG] PluginMonitor starting initialization
 System.Windows.Data Error: 4 : Cannot find source for binding with reference 'ElementName=TitleBar'. BindingExpression:(no path); DataItem=null; target element is 'NavigationView' (Name='RootNavigation'); target property is 'TitleBar' (type 'TitleBar')
-[12:44:57 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
-[12:44:57 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
-[12:44:57 DBG] Reading HWiNFO shared memory
+[13:21:42 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
+[13:21:42 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
+[13:21:42 DBG] Reading HWiNFO shared memory
 [PluginUpdateNotifier] Reading config file from C:\ProgramData\InfoPanel\plugins\InfoPanel.PluginUpdateNotifier\InfoPanel.PluginUpdateNotifier.dll.ini
 [PluginUpdateNotifier] Check interval set to: 4 hours
-[12:44:58 DBG] Typeface cache miss: Arial-Normal-False-False
-[12:44:58 INF] Plugin Clock loaded successfully
-[12:44:58 DBG] Typeface cache miss: Arial-Black-False-False
-[12:44:58 DBG] Reading HWiNFO shared memory
-[12:44:59 INF] Plugin Drive Info loaded successfully
-[12:44:59 INF] Plugin HWiNFO Registry loaded successfully
-[12:44:59 INF] Plugin Network Info loaded successfully
-[12:44:59 INF] Plugin System Info loaded successfully
-[12:44:59 DBG] Plugin HWiNFO Registry task started
-[12:44:59 DBG] Plugin Drive Info task started
-[12:44:59 DBG] Plugin Network Info task started
-[12:44:59 DBG] Plugin System Info task started
+[13:21:42 DBG] Typeface cache miss: Arial-Normal-False-False
+[13:21:42 INF] Plugin Clock loaded successfully
+[13:21:42 DBG] Typeface cache miss: Arial-Black-False-False
+[13:21:43 DBG] Reading HWiNFO shared memory
+[13:21:43 INF] Plugin Drive Info loaded successfully
+[13:21:43 INF] Plugin HWiNFO Registry loaded successfully
+[13:21:43 INF] Plugin Network Info loaded successfully
+[13:21:43 INF] Plugin System Info loaded successfully
+[13:21:44 DBG] Plugin HWiNFO Registry task started
+[13:21:44 DBG] Plugin Drive Info task started
+[13:21:44 DBG] Plugin Network Info task started
+[13:21:44 DBG] Plugin System Info task started
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:00 DBG] Reading HWiNFO shared memory
-[12:45:00 INF] Plugin Volume Info loaded successfully
-[12:45:00 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
+[13:21:45 INF] Plugin Volume Info loaded successfully
+[13:21:45 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
 Weather Plugin: Reading INI file from C:\ProgramData\InfoPanel\plugins\InfoPanel.MetYr\InfoPanel.MetYr.dll.ini
 Weather Plugin: INI file content:
 [Yr Weather Plugin]
@@ -96,7 +95,7 @@ UtcOffsetHours = 2
 ForecastDays = 7
 TemperatureUnit = C
 IconUrl = https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-18 10:45'
+Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-18 11:21'
 Weather Plugin: Validated format 'ddd d MMM' -> 'Sat 18 Oct'
 Weather Plugin: INI Latitude/Longitude invalid or missing, will use geocoding.
 Weather Plugin: Read location from INI: Brevik
@@ -108,36 +107,35 @@ Weather Plugin: Forecast days set to: 7
 Weather Plugin: Temperature unit set to: C
 Weather Plugin: Validating IconUrl: 'https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/'
 Weather Plugin: Testing custom IconUrl: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-[12:45:00 INF] Plugin Weather Info - MET/Yr loaded successfully
-[12:45:00 INF] Plugin Plugin Update Notifier loaded successfully
+[13:21:45 INF] Plugin Weather Info - MET/Yr loaded successfully
+[13:21:45 INF] Plugin Plugin Update Notifier loaded successfully
 Initializing PresentMon FPS Plugin v2.0.0...
 Starting monitoring task...
 Plugin initialized successfully
 FPS sensors loaded into UI
-[12:45:00 INF] Plugin PresentMon FPS loaded successfully
+[13:21:45 INF] Plugin PresentMon FPS loaded successfully
 Monitoring loop started
-Switching to: zen (PID: 17996)
-Started PresentMon monitoring for zen (PID: 17996)
+[13:21:45 DBG] Reading HWiNFO shared memory
+[13:21:45 INF] Plugin Spotify loaded successfully
+[13:21:45 INF] Plugins loaded in 2631ms
 Weather Plugin: Successfully accessed test SVG icon: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-[12:45:00 INF] Plugin Spotify loaded successfully
-[12:45:00 INF] Plugins loaded in 2962ms
-[12:45:00 DBG] Plugin Volume Info task started
-[12:45:00 DBG] Plugin Weather Info - OpenWeatherMap task started
-[12:45:00 DBG] Plugin Weather Info - MET/Yr task started
-[12:45:00 DBG] Plugin Plugin Update Notifier task started
-Weather Plugin: UpdateAsync called at 2025-10-18T10:45:00Z
+[13:21:45 DBG] Plugin Volume Info task started
+[13:21:45 DBG] Plugin Weather Info - OpenWeatherMap task started
+[13:21:45 DBG] Plugin Plugin Update Notifier task started
+[13:21:45 DBG] Plugin Weather Info - MET/Yr task started
+[13:21:45 DBG] Plugin PresentMon FPS task started
+Weather Plugin: UpdateAsync called at 2025-10-18T11:21:45Z
 Weather Plugin: Geocoding URL: https://nominatim.openstreetmap.org/search?q=Brevik&format=json&limit=1
-[12:45:00 DBG] Plugin PresentMon FPS task started
-Weather Plugin: Nominatim response: [{"place_id":153020659,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
+[13:21:45 DBG] Plugin Spotify task started
+Weather Plugin: Nominatim response: [{"place_id":154116111,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
 Weather Plugin: Coordinates set from Nominatim - Lat: 59.3474836, Lon: 18.2043939
 Weather Plugin: Fetching current weather: https://api.met.no/weatherapi/nowcast/2.0/complete?lat=59.3475&lon=18.2044
-[12:45:00 DBG] Plugin Spotify task started
-Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T10:42:08Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-18T10:45:00Z","data":{"instant":{"details":{"air_temperature":5.8,"precipitation_rate":0.0,"relative_humidity":...
-Weather Plugin: Current timeseries from nowcast: 2025-10-18T10:45:00Z
+Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T11:18:21Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-18T11:20:00Z","data":{"instant":{"details":{"air_temperature":6.4,"precipitation_rate":0.0,"relative_humidity":...
+Weather Plugin: Current timeseries from nowcast: 2025-10-18T11:20:00Z
 Weather Plugin: Fetching forecast: https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T09:30:00Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
+Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T10:27:12Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
 Weather Plugin: Added forecast row - Date: Sun 19 Oct, Weather: Cloudy, Temp: 8 �C / 1 �C, Precip: 0.0 mm, Wind: 2.9 m/s SW
-Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 9 �C / 3 �C, Precip: 0.0 mm, Wind: 2.8 m/s S
+Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 10 �C / 3 �C, Precip: 0.0 mm, Wind: 2.8 m/s S
 Weather Plugin: Added forecast row - Date: Tue 21 Oct, Weather: Cloudy, Temp: 11 �C / 8 �C, Precip: 2.6 mm, Wind: 5.0 m/s S
 Weather Plugin: Added forecast row - Date: Wed 22 Oct, Weather: Cloudy, Temp: 11 �C / 10 �C, Precip: 3.3 mm, Wind: 4.6 m/s S
 Weather Plugin: Added forecast row - Date: Thu 23 Oct, Weather: Moderate Rain, Temp: 12 �C / 10 �C, Precip: 3.4 mm, Wind: 3.2 m/s S
@@ -147,72 +145,205 @@ Weather Plugin: Mapped symbol 'clearsky_day' to icon: clear-day, description: Cl
 Weather Plugin: Using custom icon URL: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
 Weather Plugin: Checking SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
 Weather Plugin: Using SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-Weather Plugin: Set data - Temp: 5.8�C, Weather: clearsky, Description: Clear Sky, Icon: clear-day
-Weather Plugin: UTC time: 2025-10-18 10:45:01 UTC
-Weather Plugin: Adjusted time: 2025-10-18 12:45:01 (offset: 2 hours)
-Weather Plugin: Last refreshed set to: 2025-10-18 12:45
-[12:45:01 DBG] Reading HWiNFO shared memory
-[12:45:02 DBG] Reading HWiNFO shared memory
-[12:45:04 DBG] Reading HWiNFO shared memory
+Weather Plugin: Set data - Temp: 6.4�C, Weather: clearsky, Description: Clear Sky, Icon: clear-day
+Weather Plugin: UTC time: 2025-10-18 11:21:45 UTC
+Weather Plugin: Adjusted time: 2025-10-18 13:21:45 (offset: 2 hours)
+Weather Plugin: Last refreshed set to: 2025-10-18 13:21
+[13:21:46 DBG] Reading HWiNFO shared memory
+[13:21:47 DBG] Reading HWiNFO shared memory
+[13:21:48 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:05 DBG] Reading HWiNFO shared memory
-[12:45:06 DBG] Reading HWiNFO shared memory
-[12:45:07 INF] LibreHardwareMonitor computer opened in 9778ms
-[12:45:08 DBG] Reading HWiNFO shared memory
-[12:45:09 DBG] Reading HWiNFO shared memory
-Switching to: iCloudServices (PID: 28892)
-PresentMon monitoring stopped
-Started PresentMon monitoring for iCloudServices (PID: 28892)
+[13:21:50 DBG] Reading HWiNFO shared memory
+[13:21:51 DBG] Reading HWiNFO shared memory
+[13:21:52 INF] LibreHardwareMonitor computer opened in 9523ms
+[13:21:52 DBG] Reading HWiNFO shared memory
+[13:21:54 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:10 DBG] Reading HWiNFO shared memory
-[12:45:11 DBG] Reading HWiNFO shared memory
-[12:45:13 DBG] Reading HWiNFO shared memory
-[12:45:14 DBG] Reading HWiNFO shared memory
+Switching to: XboxGameBarWidgets (PID: 27948)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:21:55 DBG] Reading HWiNFO shared memory
+[13:21:56 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:21:58 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:21:59 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:15 DBG] Reading HWiNFO shared memory
-[12:45:17 DBG] Reading HWiNFO shared memory
-[12:45:18 DBG] Reading HWiNFO shared memory
-[12:45:19 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:00 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:02 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:03 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:04 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:21 DBG] Reading HWiNFO shared memory
-[12:45:22 DBG] Reading HWiNFO shared memory
-[12:45:23 DBG] Reading HWiNFO shared memory
-[12:45:25 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:05 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:07 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:08 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:09 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:26 DBG] Reading HWiNFO shared memory
-[12:45:27 DBG] Reading HWiNFO shared memory
-[12:45:28 DBG] Reading HWiNFO shared memory
-[12:45:30 DBG] Reading HWiNFO shared memory
+[13:22:11 DBG] Reading HWiNFO shared memory
+Switching to: NMS (PID: 40820)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:12 DBG] Reading HWiNFO shared memory
+[13:22:13 DBG] Reading HWiNFO shared memory
+[13:22:15 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:31 DBG] Reading HWiNFO shared memory
-[12:45:32 DBG] Reading HWiNFO shared memory
-[12:45:34 DBG] Reading HWiNFO shared memory
-[12:45:35 DBG] Reading HWiNFO shared memory
+[13:22:16 DBG] Reading HWiNFO shared memory
+[13:22:17 DBG] Reading HWiNFO shared memory
+[13:22:18 DBG] Reading HWiNFO shared memory
+[13:22:20 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:36 DBG] Reading HWiNFO shared memory
-[12:45:38 DBG] Reading HWiNFO shared memory
-[12:45:39 DBG] Reading HWiNFO shared memory
-[12:45:40 DBG] Reading HWiNFO shared memory
+[13:22:21 DBG] Reading HWiNFO shared memory
+[13:22:22 DBG] Reading HWiNFO shared memory
+[13:22:24 DBG] Reading HWiNFO shared memory
+[13:22:25 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:41 DBG] Reading HWiNFO shared memory
-[12:45:43 DBG] Reading HWiNFO shared memory
-[12:45:44 DBG] Reading HWiNFO shared memory
-[12:45:45 DBG] Reading HWiNFO shared memory
+[13:22:26 DBG] Reading HWiNFO shared memory
+[13:22:28 DBG] Reading HWiNFO shared memory
+[13:22:29 DBG] Reading HWiNFO shared memory
+[13:22:30 DBG] Reading HWiNFO shared memory
+[13:22:31 DBG] Reading HWiNFO shared memory
+[13:22:31 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[12:45:47 DBG] Reading HWiNFO shared memory
-[12:45:48 DBG] Reading HWiNFO shared memory
-[12:45:49 DBG] Reading HWiNFO shared memory
-[12:45:50 DBG] BeadaPanelTask stopping
-[12:45:50 DBG] TuringPanelTask stopping
-[12:45:50 DBG] LibreMonitor stopping
-[12:45:50 DBG] LibreMonitor task cancelled
-[12:45:50 DBG] Disposing resources for LibreMonitor
-[12:45:50 DBG] LibreMonitor stopped
-[12:45:50 DBG] PluginMonitor stopping
-[12:45:50 DBG] PluginMonitor task cancelled
-[12:45:50 DBG] Disposing resources for PluginMonitor
-[12:45:50 DBG] PluginMonitor stopped
+[13:22:32 DBG] Reading HWiNFO shared memory
+[13:22:33 DBG] Reading HWiNFO shared memory
+[13:22:35 DBG] Reading HWiNFO shared memory
+[13:22:36 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[13:22:37 DBG] Reading HWiNFO shared memory
+[13:22:39 DBG] Reading HWiNFO shared memory
+[13:22:40 DBG] Reading HWiNFO shared memory
+[13:22:41 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[13:22:43 DBG] Reading HWiNFO shared memory
+[13:22:44 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:45 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[13:22:46 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:48 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:49 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:50 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[13:22:52 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:53 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:54 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:56 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[13:22:57 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:22:58 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Switching to: bf6 (PID: 42584)
+PresentMon: pmOpenSession failed with status PM_STATUS_MIDDLEWARE_MISSING_PATH.
+PresentMon: unable to open session. Install and start the PresentMon service.
+[13:23:00 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.ComponentModel.Win32Exception' in System.Diagnostics.Process.dll
+Exception thrown: 'System.ArgumentException' in System.Diagnostics.Process.dll
+[13:23:01 DBG] Reading HWiNFO shared memory
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[13:23:02 DBG] Reading HWiNFO shared memory
+[13:23:03 DBG] Reading HWiNFO shared memory
+[13:23:04 DBG] BeadaPanelTask stopping
+[13:23:04 DBG] TuringPanelTask stopping
+[13:23:04 DBG] LibreMonitor stopping
+[13:23:04 DBG] LibreMonitor task cancelled
+[13:23:04 DBG] Disposing resources for LibreMonitor
+[13:23:04 DBG] LibreMonitor stopped
+[13:23:04 DBG] PluginMonitor stopping
+[13:23:04 DBG] PluginMonitor task cancelled
+[13:23:04 DBG] Disposing resources for PluginMonitor
+[13:23:04 DBG] PluginMonitor stopped
    Info: AppDomain process exited: Disposing SDK.
    Info: Disposing the Hub.
   Debug: Successfully flushed all events up to call to FlushAsync.
-The program '[6856] InfoPanel.exe' has exited with code 0 (0x0).
+The program '[43648] InfoPanel.exe' has exited with code 0 (0x0).
