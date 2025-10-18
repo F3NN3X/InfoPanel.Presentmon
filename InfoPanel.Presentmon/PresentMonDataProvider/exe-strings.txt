@@ -1,0 +1,4 @@
+.?AV?$_Ref_count_obj2@UPresentEvent@@@std@@
+C:\Files\Repos\PresentMon\build\Release\PresentMon-2.3.1-x64.pdb
+IsDebuggerPresent
+IsProcessorFeaturePresent

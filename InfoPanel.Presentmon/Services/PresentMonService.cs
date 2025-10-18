@@ -21,23 +21,53 @@ namespace InfoPanel.Presentmon.Services
 
         private readonly List<float> _frameTimes = new();
         private const int MaxFrameSamples = 1000;
-        private const int DiagnosticLogLimit = 5;
+        private const int DiagnosticLogLimit = 10;
+        private const int RawLineLogLimit = 10;
+        private const int MetricLogLimit = 5;
 
         private Dictionary<string, int>? _columnIndexMap;
         private int _maxColumnIndex;
         private int _diagnosticLinesLogged;
+        private int _metricLinesLogged;
         private bool _headerLogged;
+        private int _rawLinesLogged;
+    private float _lastGpuLatency;
+    private float _lastGpuTime;
+    private float _lastGpuBusy;
+    private float _lastGpuWait;
+    private float _lastDisplayLatency;
+    private float _lastCpuBusy;
+    private float _lastCpuWait;
+    private float _lastGpuUtilization;
 
         private static readonly string[] FrameTimeColumnCandidates =
         {
-            "MsBetweenPresents",
-            "MsBetweenDisplays",
-            "MsUntilDisplayed",
-            "MsInPresentAPI",
+            "FrameTime",
+            "frame_time",
             "FrameTimeMs",
             "frame_time_ms",
-            "FrameTime",
-            "frame_time"
+            "MsBetweenPresents",
+            "msBetweenPresents",
+            "msBetweenDisplayChange",
+            "MsRenderPresentLatency",
+            "MsBetweenAppStart",
+            "MsBetweenSimulationStart",
+            "MsAllInputToPhotonLatency",
+            "MsClickToPhotonLatency",
+            "MsGPUTime",
+            "msGPUActive",
+            "MsGPULatency",
+            "MsGPUBusy",
+            "MsGPUWait",
+            "MsCPUBusy",
+            "MsCPUWait",
+            "MsInPresentAPI",
+            "msInPresentAPI",
+            "MsUntilDisplayed",
+            "msUntilDisplayed",
+            "msUntilRenderComplete",
+            "msUntilRenderStart",
+            "msSinceInput"
         };
 
         private static readonly string[] FpsColumnCandidates =
@@ -59,24 +89,19 @@ namespace InfoPanel.Presentmon.Services
         {
             try
             {
-                var exePath = GetDataProviderPath();
-                if (!File.Exists(exePath))
+                var exePath = ResolvePresentMonExecutable(out bool useConsoleBuild);
+                if (string.IsNullOrEmpty(exePath))
                 {
-                    Console.WriteLine($"PresentMon provider not found at: {exePath}");
+                    Console.WriteLine("PresentMon: no executable found in PresentMonDataProvider directory.");
                     return false;
                 }
 
                 var providerDirectory = Path.GetDirectoryName(exePath)!;
-                await TerminateExistingSessionAsync(exePath, providerDirectory).ConfigureAwait(false);
+                Console.WriteLine($"PresentMon: using {(useConsoleBuild ? "console" : "provider")} executable at {exePath}");
+                Console.WriteLine("PresentMon: terminating pre-existing session (if any).");
+                await TerminateExistingSessionAsync(exePath, providerDirectory, useConsoleBuild).ConfigureAwait(false);
 
-                var arguments = string.Join(' ', new[]
-                {
-                    $"-process_id={processId}",
-                    "-output_stdout",
-                    "-stop_existing_session",
-                    "-terminate_on_proc_exit",
-                    "-qpc_time"
-                });
+                var arguments = BuildLaunchArguments(processId, processName, useConsoleBuild);
 
                 var startInfo = new ProcessStartInfo
                 {
@@ -90,12 +115,27 @@ namespace InfoPanel.Presentmon.Services
                     WorkingDirectory = providerDirectory
                 };
 
+                Console.WriteLine($"PresentMon: launching provider '{startInfo.FileName}' with args: {startInfo.Arguments}");
+
                 _presentMonProcess = Process.Start(startInfo);
                 if (_presentMonProcess == null)
                 {
                     Console.WriteLine("PresentMon: failed to launch provider process.");
                     return false;
                 }
+
+                _presentMonProcess.EnableRaisingEvents = true;
+                _presentMonProcess.Exited += (sender, _) =>
+                {
+                    if (sender is Process proc)
+                    {
+                        Console.WriteLine($"PresentMon: provider exited (code: {proc.ExitCode})");
+                    }
+                    else
+                    {
+                        Console.WriteLine("PresentMon: provider exited.");
+                    }
+                };
 
                 _frameTimes.Clear();
                 ResetParsingState();
@@ -118,7 +158,13 @@ namespace InfoPanel.Presentmon.Services
         {
             try
             {
+                Console.WriteLine("PresentMon: stop requested.");
                 _processCts?.Cancel();
+
+                if (_presentMonProcess != null)
+                {
+                    Console.WriteLine($"PresentMon: request stop (running={!_presentMonProcess.HasExited}, pid={_presentMonProcess.Id})");
+                }
 
                 if (_presentMonProcess != null && !_presentMonProcess.HasExited)
                 {
@@ -126,14 +172,19 @@ namespace InfoPanel.Presentmon.Services
                     await _presentMonProcess.WaitForExitAsync().ConfigureAwait(false);
                 }
 
+                if (_presentMonProcess != null)
+                {
+                    Console.WriteLine($"PresentMon: disposing provider process (exitCode={_presentMonProcess.ExitCode})");
+                }
+
                 _presentMonProcess?.Dispose();
                 _presentMonProcess = null;
 
-                var exePath = GetDataProviderPath();
-                if (File.Exists(exePath))
+                var exePath = ResolvePresentMonExecutable(out bool useConsoleBuild);
+                if (!string.IsNullOrEmpty(exePath))
                 {
                     var providerDirectory = Path.GetDirectoryName(exePath)!;
-                    await TerminateExistingSessionAsync(exePath, providerDirectory).ConfigureAwait(false);
+                    await TerminateExistingSessionAsync(exePath, providerDirectory, useConsoleBuild).ConfigureAwait(false);
                 }
 
                 _frameTimes.Clear();
@@ -156,12 +207,15 @@ namespace InfoPanel.Presentmon.Services
 
             try
             {
+                Console.WriteLine("PresentMon: stdout reader started.");
                 string? line;
                 while ((line = await _presentMonProcess.StandardOutput.ReadLineAsync().ConfigureAwait(false)) != null &&
                        !cancellationToken.IsCancellationRequested)
                 {
                     ProcessOutputLine(line);
                 }
+
+                Console.WriteLine("PresentMon: stdout reader completed.");
             }
             catch (Exception ex)
             {
@@ -178,6 +232,7 @@ namespace InfoPanel.Presentmon.Services
 
             try
             {
+                Console.WriteLine("PresentMon: stderr reader started.");
                 string? line;
                 while ((line = await _presentMonProcess.StandardError.ReadLineAsync().ConfigureAwait(false)) != null &&
                        !cancellationToken.IsCancellationRequested)
@@ -187,6 +242,8 @@ namespace InfoPanel.Presentmon.Services
                         Console.WriteLine($"PresentMon stderr: {line}");
                     }
                 }
+
+                Console.WriteLine("PresentMon: stderr reader completed.");
             }
             catch (Exception ex)
             {
@@ -201,6 +258,12 @@ namespace InfoPanel.Presentmon.Services
                 if (string.IsNullOrWhiteSpace(line))
                 {
                     return;
+                }
+
+                if (!_headerLogged && _rawLinesLogged < RawLineLogLimit)
+                {
+                    Console.WriteLine($"PresentMon raw: {line}");
+                    _rawLinesLogged++;
                 }
 
                 if (line.StartsWith("warning", StringComparison.OrdinalIgnoreCase) ||
@@ -221,7 +284,7 @@ namespace InfoPanel.Presentmon.Services
                 {
                     if (TryParseHeader(columns) && !_headerLogged)
                     {
-                        Console.WriteLine($"PresentMon columns: {string.Join(", ", _columnIndexMap!.Keys)}");
+                        Console.WriteLine($"PresentMon columns detected ({_columnIndexMap!.Count}): {string.Join(", ", _columnIndexMap.Keys)}");
                         _headerLogged = true;
                     }
                     return;
@@ -250,9 +313,21 @@ namespace InfoPanel.Presentmon.Services
                     return;
                 }
 
+                float? gpuLatencyMs = TryGetFloat(columns, "MsGPULatency", out float gpuLatency) ? gpuLatency : null;
+                float? gpuTimeMs = TryGetFloat(columns, "MsGPUTime", out float gpuTime) ? gpuTime : null;
+                float? gpuBusyMs = TryGetFloat(columns, "MsGPUBusy", out float gpuBusy) ? gpuBusy : null;
+                float? gpuWaitMs = TryGetFloat(columns, "MsGPUWait", out float gpuWait) ? gpuWait : null;
+                float? displayLatencyMs = TryGetFloat(columns, "MsUntilDisplayed", out float displayLatency) ? displayLatency : null;
+                float? cpuBusyMs = TryGetFloat(columns, "MsCPUBusy", out float cpuBusy) ? cpuBusy : null;
+                float? cpuWaitMs = TryGetFloat(columns, "MsCPUWait", out float cpuWait) ? cpuWait : null;
+
                 if (frameTimeMs > 0 && frameTimeMs < 1000)
                 {
-                    UpdateMetrics(frameTimeMs);
+                    UpdateMetrics(frameTimeMs, gpuLatencyMs, gpuTimeMs, gpuBusyMs, gpuWaitMs, displayLatencyMs, cpuBusyMs, cpuWaitMs);
+                }
+                else
+                {
+                    LogDiagnostic($"PresentMon frame time outside expected range: {frameTimeMs:F3} ms");
                 }
             }
             catch (Exception ex)
@@ -261,7 +336,15 @@ namespace InfoPanel.Presentmon.Services
             }
         }
 
-        private void UpdateMetrics(float frameTimeMs)
+        private void UpdateMetrics(
+            float frameTimeMs,
+            float? gpuLatencyMs,
+            float? gpuTimeMs,
+            float? gpuBusyMs,
+            float? gpuWaitMs,
+            float? displayLatencyMs,
+            float? cpuBusyMs,
+            float? cpuWaitMs)
         {
             _frameTimes.Add(frameTimeMs);
             if (_frameTimes.Count > MaxFrameSamples)
@@ -274,26 +357,166 @@ namespace InfoPanel.Presentmon.Services
                 return;
             }
 
+            if (gpuLatencyMs.HasValue)
+            {
+                _lastGpuLatency = gpuLatencyMs.Value;
+            }
+
+            if (gpuTimeMs.HasValue)
+            {
+                _lastGpuTime = gpuTimeMs.Value;
+            }
+
+            if (gpuBusyMs.HasValue)
+            {
+                _lastGpuBusy = gpuBusyMs.Value;
+
+                if (frameTimeMs > 0.0001f)
+                {
+                    float utilization = (_lastGpuBusy / frameTimeMs) * 100f;
+                    _lastGpuUtilization = Math.Clamp(utilization, 0f, 100f);
+                }
+            }
+
+            if (gpuWaitMs.HasValue)
+            {
+                _lastGpuWait = gpuWaitMs.Value;
+            }
+
+            if (displayLatencyMs.HasValue)
+            {
+                _lastDisplayLatency = displayLatencyMs.Value;
+            }
+
+            if (cpuBusyMs.HasValue)
+            {
+                _lastCpuBusy = cpuBusyMs.Value;
+            }
+
+            if (cpuWaitMs.HasValue)
+            {
+                _lastCpuWait = cpuWaitMs.Value;
+            }
+
             float avgFrameTime = _frameTimes.Sum() / _frameTimes.Count;
             float fps = avgFrameTime > 0 ? 1000f / avgFrameTime : 0f;
 
             var sortedFrameTimes = _frameTimes.OrderByDescending(x => x).ToList();
-            int onePercentIndex = Math.Max(0, (int)(_frameTimes.Count * 0.01) - 1);
+            int onePercentIndex = Math.Max(0, (int)Math.Ceiling(_frameTimes.Count * 0.01f) - 1);
             float onePercentLowFrameTime = sortedFrameTimes.ElementAtOrDefault(onePercentIndex);
             float onePercentLowFps = onePercentLowFrameTime > 0 ? 1000f / onePercentLowFrameTime : 0;
+
+            int zeroPointOnePercentIndex = Math.Max(0, (int)Math.Ceiling(_frameTimes.Count * 0.001f) - 1);
+            float zeroPointOneLowFrameTime = sortedFrameTimes.ElementAtOrDefault(zeroPointOnePercentIndex);
+            float zeroPointOnePercentLowFps = zeroPointOneLowFrameTime > 0 ? 1000f / zeroPointOneLowFrameTime : 0;
+
+            if (_metricLinesLogged < MetricLogLimit)
+            {
+                Console.WriteLine($"PresentMon metrics: samples={_frameTimes.Count}, avg={avgFrameTime:F3}ms, fps={fps:F1}, 1pctLow={onePercentLowFps:F1}, 0.1pctLow={zeroPointOnePercentLowFps:F1}");
+                _metricLinesLogged++;
+            }
 
             MetricsUpdated?.Invoke(this, new FrameData
             {
                 Fps = fps,
                 FrameTimeMs = avgFrameTime,
-                OnePercentLowFps = onePercentLowFps
+                OnePercentLowFps = onePercentLowFps,
+                ZeroPointOnePercentLowFps = zeroPointOnePercentLowFps,
+                GpuLatencyMs = _lastGpuLatency,
+                GpuTimeMs = _lastGpuTime,
+                GpuBusyMs = _lastGpuBusy,
+                GpuWaitMs = _lastGpuWait,
+                DisplayLatencyMs = _lastDisplayLatency,
+                CpuBusyMs = _lastCpuBusy,
+                CpuWaitMs = _lastCpuWait,
+                GpuUtilizationPercent = _lastGpuUtilization,
+                Timestamp = DateTime.Now
             });
         }
 
-        private string GetDataProviderPath()
+        private string? ResolvePresentMonExecutable(out bool isConsoleBuild)
         {
+            isConsoleBuild = false;
+
             var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return Path.Combine(assemblyDir!, "PresentMonDataProvider", "PresentMonDataProvider.exe");
+            if (assemblyDir == null)
+            {
+                return null;
+            }
+
+            var providerDir = Path.Combine(assemblyDir, "PresentMonDataProvider");
+            if (Directory.Exists(providerDir))
+            {
+                string[] consoleCandidates =
+                {
+                    "PresentMon-2.3.1-x64.exe",
+                    "PresentMon-2.3.1-x64-DLSS4.exe",
+                    "PresentMon-1.10.0-x64.exe"
+                };
+
+                foreach (var candidate in consoleCandidates)
+                {
+                    var candidatePath = Path.Combine(providerDir, candidate);
+                    if (File.Exists(candidatePath))
+                    {
+                        isConsoleBuild = true;
+                        return candidatePath;
+                    }
+                }
+
+                var providerExe = Path.Combine(providerDir, "PresentMonDataProvider.exe");
+                if (File.Exists(providerExe))
+                {
+                    return providerExe;
+                }
+            }
+
+            return null;
+        }
+
+        private static string BuildLaunchArguments(uint processId, string processName, bool useConsoleBuild)
+        {
+            if (useConsoleBuild)
+            {
+                var targetName = processName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
+                    ? processName
+                    : processName + ".exe";
+
+                var arguments = new[]
+                {
+                    $"--process_name \"{targetName}\"",
+                    "--output_stdout",
+                    "--stop_existing_session",
+                    "--terminate_on_proc_exit",
+                    "--no_console_stats",
+                    "--set_circular_buffer_size 8192",
+                    "--qpc_time",
+                    "--session_name PresentMonDataProvider"
+                };
+
+                return string.Join(' ', arguments);
+            }
+
+            var providerArgs = new[]
+            {
+                $"-process_id={processId}",
+                "-output_stdout",
+                "-stop_existing_session",
+                "-terminate_on_proc_exit",
+                "-qpc_time"
+            };
+
+            return string.Join(' ', providerArgs);
+        }
+
+        private static string BuildTerminateArguments(bool useConsoleBuild)
+        {
+            if (useConsoleBuild)
+            {
+                return "--terminate_existing_session --session_name PresentMonDataProvider";
+            }
+
+            return "-terminate_existing_session";
         }
 
         private void ResetParsingState()
@@ -301,7 +524,17 @@ namespace InfoPanel.Presentmon.Services
             _columnIndexMap = null;
             _maxColumnIndex = 0;
             _diagnosticLinesLogged = 0;
+            _metricLinesLogged = 0;
             _headerLogged = false;
+            _rawLinesLogged = 0;
+            _lastGpuLatency = 0f;
+            _lastGpuTime = 0f;
+            _lastGpuBusy = 0f;
+            _lastGpuWait = 0f;
+            _lastDisplayLatency = 0f;
+            _lastCpuBusy = 0f;
+            _lastCpuWait = 0f;
+            _lastGpuUtilization = 0f;
         }
 
         private bool TryParseHeader(IReadOnlyList<string> columns)
@@ -329,6 +562,7 @@ namespace InfoPanel.Presentmon.Services
             _columnIndexMap = map;
             _maxColumnIndex = map.Values.Max();
             _diagnosticLinesLogged = 0;
+            _metricLinesLogged = 0;
             return true;
         }
 
@@ -493,14 +727,15 @@ namespace InfoPanel.Presentmon.Services
             return result;
         }
 
-        private async Task TerminateExistingSessionAsync(string exePath, string workingDirectory)
+        private async Task TerminateExistingSessionAsync(string exePath, string workingDirectory, bool useConsoleBuild)
         {
             try
             {
+                Console.WriteLine("PresentMon: invoking terminate_existing_session helper.");
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = exePath,
-                    Arguments = "-terminate_existing_session",
+                    Arguments = BuildTerminateArguments(useConsoleBuild),
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -512,6 +747,11 @@ namespace InfoPanel.Presentmon.Services
                 if (process != null)
                 {
                     await process.WaitForExitAsync().ConfigureAwait(false);
+                    Console.WriteLine($"PresentMon: terminate_existing_session exit code {process.ExitCode}.");
+                }
+                else
+                {
+                    Console.WriteLine("PresentMon: terminate_existing_session launch failed.");
                 }
             }
             catch (Exception ex)
