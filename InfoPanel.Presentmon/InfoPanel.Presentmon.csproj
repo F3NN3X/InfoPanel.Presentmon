@@ -56,27 +56,14 @@
     <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
   </Target>
 
-  <Target Name="PublishBridgeService" AfterTargets="MoveDependencyFiles" Condition="'$(IsCrossTargetingBuild)' != 'true' and '$(DesignTimeBuild)' != 'true'">
+  <!-- Copy to InfoPanel debug directory -->
+  <Target Name="CopyToInfoPanel" AfterTargets="MoveDependencyFiles" Condition="'$(Configuration)' == 'Debug'">
     <PropertyGroup>
-      <BridgePublishDir>$([System.IO.Path]::GetFullPath('$(TargetDir)PresentMonBridgeService\'))</BridgePublishDir>
+      <InfoPanelDebugDir>E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64</InfoPanelDebugDir>
     </PropertyGroup>
-    <Message Text="Publishing PresentMon Bridge Service to $(BridgePublishDir)" Importance="high" />
-    <RemoveDir Directories="$(BridgePublishDir)" ContinueOnError="true" />
-
-    <MSBuild Projects="..\PresentMon.BridgeService\PresentMon.BridgeService.csproj"
-             Targets="Publish"
-             Properties="Configuration=$(Configuration);PublishDir=$(BridgePublishDir);RuntimeIdentifier=win-x64;SelfContained=false;UseAppHost=true" />
-
-    <RemoveDir Directories="$(BridgePublishDir)PresentMonBridgeService" ContinueOnError="true" />
-
-    <ItemGroup>
-      <BridgeProviderFiles Include="$(OutputPath)PresentMonDataProvider\**\*.*" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(BridgeProviderFiles)"
-          DestinationFiles="@(BridgeProviderFiles->'$(BridgePublishDir)PresentMonDataProvider\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="$(OutputPath)InfoPanel.Presentmon.dll" DestinationFolder="$(InfoPanelDebugDir)" />
+    <Message Text="Copied InfoPanel.Presentmon.dll to InfoPanel debug directory" Importance="high" />
   </Target>
-
 
   <!-- ZIP packaging for release builds -->
   <Target Name="CreateReleaseZip" AfterTargets="MoveDependencyFiles" Condition="'$(Configuration)' == 'Release'">
@@ -128,14 +115,27 @@
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
-    <ProjectReference Include="..\PresentMon.BridgeContracts\PresentMon.BridgeContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Copy PresentMonAPI DLLs to output -->
+    <None Update="PresentMonAPI2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>PresentMonAPI2.dll</TargetPath>
+    </None>
+    <None Update="PresentMonAPI2Loader.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>PresentMonAPI2Loader.dll</TargetPath>
+    </None>
     <!-- Copy PresentMonDataProvider folder and all its contents -->
     <None Update="PresentMonDataProvider\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </None>
+    <!-- Copy PresentMonDataProvider.exe to PresentMonDataProvider subfolder -->
+    <None Update="PresentMonDataProvider.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TargetPath>PresentMonDataProvider\PresentMonDataProvider.exe</TargetPath>
     </None>
     <None Update="PluginInfo.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

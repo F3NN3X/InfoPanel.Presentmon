@@ -15,7 +15,7 @@ namespace InfoPanel.Presentmon
         private readonly PluginSensor _onePercentLowSensor = new("1% low", "1% Low FPS", 0, "FPS");
         private readonly PluginText _windowTitle = new("windowtitle", "Currently Capturing", "Nothing to capture");
 
-        private readonly PresentMonService _presentMonService;
+        private readonly PresentMonProviderService _presentMonProviderService;
         private readonly FullscreenDetectionService _fullscreenDetectionService;
 
         private CancellationTokenSource? _monitoringCts;
@@ -24,11 +24,11 @@ namespace InfoPanel.Presentmon
         private bool _disposed = false;
 
         public IPFpsPlugin()
-            : base("presentmon", "PresentMon FPS", "Real-time FPS monitoring using PresentMon 2.3.1 - v2.0.0")
+            : base("presentmon", "PresentMon FPS", "Real-time FPS monitoring using PresentMonDataProvider - v2.0.0")
         {
-            _presentMonService = new PresentMonService();
+            _presentMonProviderService = new PresentMonProviderService();
             _fullscreenDetectionService = new FullscreenDetectionService();
-            _presentMonService.MetricsUpdated += OnMetricsUpdated;
+            _presentMonProviderService.MetricsUpdated += OnMetricsUpdated;
         }
 
         public override string? ConfigFilePath => null;
@@ -47,7 +47,7 @@ namespace InfoPanel.Presentmon
 
         private async Task MonitoringLoopAsync(CancellationToken cancellationToken)
         {
-            Console.WriteLine("Monitoring loop started");
+            Console.WriteLine("PresentMon Plugin: Monitoring loop started");
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -55,18 +55,17 @@ namespace InfoPanel.Presentmon
                 {
                     var detectedState = await _fullscreenDetectionService.DetectFullscreenProcessAsync();
 
+                    if (detectedState != null)
+                    {
+                        Console.WriteLine($"PresentMon Plugin: Detected fullscreen - {detectedState.ProcessName} (PID: {detectedState.ProcessId})");
+                    }
+
                     if (detectedState != null && ShouldSwitchProcess(detectedState))
                     {
                         Console.WriteLine($"Switching to: {detectedState.ProcessName} (PID: {detectedState.ProcessId})");
 
-                        if (_currentState?.IsMonitoring == true)
-                        {
-                            await _presentMonService.StopMonitoringAsync();
-                        }
-
-                        bool success = await _presentMonService.OpenSessionAsync(
-                            detectedState.ProcessId, 
-                            detectedState.ProcessName);
+                        // Don't stop the provider - just send it the new PID
+                        bool success = await _presentMonProviderService.StartMonitoringAsync((int)detectedState.ProcessId);
 
                         if (success)
                         {
@@ -81,7 +80,7 @@ namespace InfoPanel.Presentmon
                         if (!isValid)
                         {
                             Console.WriteLine($"Process {_currentState.ProcessId} is no longer valid");
-                            await _presentMonService.StopMonitoringAsync();
+                            // Don't stop provider - let it keep running for next process
                             _currentState.IsMonitoring = false;
                             _windowTitle.Value = "Nothing to capture";
                             ResetSensors();
@@ -155,8 +154,8 @@ namespace InfoPanel.Presentmon
                 _monitoringCts?.Cancel();
                 _monitoringTask?.Wait(5000);
 
-                _presentMonService?.StopMonitoringAsync().Wait(5000);
-                _presentMonService?.Dispose();
+                _presentMonProviderService?.StopMonitoringAsync().Wait(5000);
+                _presentMonProviderService?.Dispose();
                 _fullscreenDetectionService?.Dispose();
 
                 _monitoringCts?.Dispose();

@@ -27,7 +27,25 @@ namespace InfoPanel.Presentmon.Services
             "mobsync", "msedge", "onedrive", "runtimebroker", "searchapp", "searchui",
             "services", "shellexperiencehost", "sihost", "sppsvc", "spoolsv", "startmenuexperiencehost",
             "steam", "system", "systemsettings", "taskhostw", "taskmgr", "textinputhost", "wininit",
-            "winlogon", "wmpnetwk", "wudfhost"
+            "winlogon", "wmpnetwk", "wudfhost",
+            // Additional system processes
+            "svchost", "conhost", "smss", "csrss", "wininit", "services", "lsass", "winlogon",
+            "fontdrvhost", "dwm", "spoolsv", "msdtc", "dfssvc", "dns", "eventlog", "eventcreate",
+            "gpsvc", "ikeext", "iphlpsvc", "keyiso", "kdc", "wkssvc", "lanmanserver", "lanmanworkstation",
+            "lltdsvc", "lmhosts", "mpssvc", "msiserver", "napagent", "netlogon", "netman", "netprofm",
+            "nlasvc", "nsi", "p2psvc", "pla", "plugplay", "policysvr", "profsvc", "protectedstorage",
+            "rasauto", "rasman", "remoteaccess", "rpcss", "rsvp", "samss", "scardsvr", "schedule",
+            "seclogon", "sens", "sessionenv", "sharedaccess", "shellhwdetection", "sis", "slsvc",
+            "snmptrap", "spooler", "ssdpsrv", "stisvc", "swprv", "sysmain", "tabletpcinputservice",
+            "tapisrv", "termdd", "termservice", "themes", "threadorder", "tiledatamodelsvc", "tlntsvr",
+            "tmgmta", "tpm", "tpmd", "tpmd", "trkwks", "trustedinstaller", "tssdis", "tssdjet",
+            "ui0detect", "umrdp", "upnphost", "upnp", "vaultsvc", "vds", "vmms", "vss", "w32time",
+            "w3svc", "w3wp", "wbengine", "wcspluginservice", "wcncsvc", "webclient", "wecsvc",
+            "wephostsvc", "wer", "wersvc", "wiaserv", "wlansvc", "wlidsvc", "wmi", "wmiapsrv",
+            "wmic", "wmiprvse", "wmpnetworksvc", "wmsvc", "workfolderssvc", "wpcsvc", "wpdbusenum",
+            "wsd", "wsearch", "wuauserv", "wudfsvc", "wudf", "wudfhost", "wudf", "xmlprov", "zeroconf",
+            // Xbox and gaming related
+            "xbox", "xboxgamebar", "xboxgamebarwidgets", "gamebar", "gamebarftserver"
         };
 
         private readonly string[] _systemPathPrefixes;
@@ -69,6 +87,11 @@ namespace InfoPanel.Presentmon.Services
                             {
                                 var processName = GetProcessName(pid);
                                 var windowTitle = GetWindowTitle(hWnd);
+                                // Only log when we actually detect a fullscreen game, not every window
+                                if (detectedState == null)
+                                {
+                                    Console.WriteLine($"Detected fullscreen window: {windowTitle} (PID: {pid}, Process: {processName})");
+                                }
                                 if (!string.IsNullOrEmpty(processName))
                                 {
                                     detectedState = new MonitoringState
@@ -78,13 +101,13 @@ namespace InfoPanel.Presentmon.Services
                                         WindowTitle = windowTitle ?? processName,
                                         IsMonitoring = false
                                     };
-                                    return false;
+                                    return false; // Stop enumeration when we find a fullscreen window
                                 }
                             }
                         }
                     }
                     catch { }
-                    return true;
+                    return true; // Continue enumeration
                 }, IntPtr.Zero);
                 return detectedState;
             });
