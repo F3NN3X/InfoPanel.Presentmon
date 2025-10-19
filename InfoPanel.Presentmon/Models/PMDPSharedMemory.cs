@@ -9,7 +9,7 @@ namespace InfoPanel.Presentmon.Models
     [StructLayout(LayoutKind.Sequential)]
     public struct PMDP_SHARED_MEMORY
     {
-        public uint dwSignature;           // 'PMDP' = 0x50444D50
+        public uint dwSignature;           // 'PMDP' = 0x504D4450
         public uint dwVersion;             // 0x00020000
         public uint dwFrameArrEntrySize;   // sizeof(PMDP_FRAME_DATA)
         public uint dwFrameArrOffset;      // Offset to frame array
@@ -35,7 +35,7 @@ namespace InfoPanel.Presentmon.Models
 
     public static class PMDPConstants
     {
-        public const uint PMDP_SIGNATURE = 0x50444D50; // 'PMDP'
+        public const uint PMDP_SIGNATURE = 0x504D4450; // 'PMDP'
         public const uint PMDP_VERSION = 0x00020000;
         public const uint PMDP_STATUS_OK = 0;
         public const uint PMDP_STATUS_INIT_FAILED = 1;
