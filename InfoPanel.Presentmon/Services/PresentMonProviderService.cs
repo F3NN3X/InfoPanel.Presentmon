@@ -18,7 +18,23 @@ namespace InfoPanel.Presentmon.Services
     {
         public event EventHandler<FrameData>? MetricsUpdated;
 
-        private const uint UM_SET_TARGET_PROCESS = 0x400 + 100; // Windows message to set target process
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern uint RegisterWindowMessage(string lpString);
+
+        private static uint? _umSetTargetProcess;
+        private static uint UM_SET_TARGET_PROCESS
+        {
+            get
+            {
+                if (_umSetTargetProcess == null)
+                {
+                    _umSetTargetProcess = RegisterWindowMessage("UM_SET_TARGET_PROCESS");
+                    Console.WriteLine($"PresentMonProvider: Registered UM_SET_TARGET_PROCESS = 0x{_umSetTargetProcess:X}");
+                }
+                return _umSetTargetProcess.Value;
+            }
+        }
+
         private const string CONNECT_WND_NAME = "PresentMonDataProviderConnectWnd";
 
         private Process? _providerProcess;
@@ -205,6 +221,10 @@ namespace InfoPanel.Presentmon.Services
                                 if (_staleFrameCounter >= MAX_STALE_READS)
                                 {
                                     Console.WriteLine($"PresentMonProvider: New frames detected! FrameCount: {_lastFrameCount} -> {frameCount}");
+                                }
+                                else if (_lastFrameCount > 0 && frameCount == 0)
+                                {
+                                    Console.WriteLine($"PresentMonProvider: Buffer reset detected! FrameCount: {_lastFrameCount} -> 0");
                                 }
                                 _staleFrameCounter = 0;
                                 _lastFrameCount = frameCount;

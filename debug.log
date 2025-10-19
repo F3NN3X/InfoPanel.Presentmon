@@ -20,8 +20,8 @@ Warning: Sentry option 'Debug' is set to true while Environment is production. B
   Debug: Persistence directory is not set, returning.
   Debug: Created directory for installation ID file (C:\Users\joransrb\AppData\Local\Sentry\469550BD7904070149D93D658A87F9B29DE566D7).
   Debug: Resolved installation ID 'bf7c523b-77d4-463d-bff9-93c7284a7493'.
-   Info: Started new session (SID: fc061f35bef94e298504e7a7ea56325d; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
-  Debug: Persisting session (SID: 'fc061f35bef94e298504e7a7ea56325d') to a file.
+   Info: Started new session (SID: 01c77c3a4ebd4b80b8841ce34a11702e; DID: bf7c523b-77d4-463d-bff9-93c7284a7493).
+  Debug: Persisting session (SID: '01c77c3a4ebd4b80b8841ce34a11702e') to a file.
   Debug: Persistence directory is not set, returning.
   Debug: Enqueuing envelope
    Info: Envelope queued up: ''
@@ -55,35 +55,35 @@ System.Net.Http.HttpRequestException: The requested name is valid, but no data o
    at Sentry.Internal.Http.HttpTransport.SendEnvelopeAsync(Envelope envelope, CancellationToken cancellationToken)
    at Sentry.Internal.BackgroundWorker.DoWorkAsync()
   Debug: De-queueing event
-[02:19:15 INF] Application started. Press Ctrl+C to shut down.
-[02:19:15 INF] Hosting environment: Production
-[02:19:15 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
-[02:19:15 INF] PawniO detected: version 2.0.1.0
-[02:19:15 DBG] LibreMonitor starting initialization
-[02:19:15 DBG] PluginMonitor starting initialization
+[02:38:09 INF] Application started. Press Ctrl+C to shut down.
+[02:38:09 INF] Hosting environment: Production
+[02:38:09 INF] Content root path: E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64
+[02:38:10 INF] PawniO detected: version 2.0.1.0
+[02:38:10 DBG] LibreMonitor starting initialization
+[02:38:10 DBG] PluginMonitor starting initialization
 System.Windows.Data Error: 4 : Cannot find source for binding with reference 'ElementName=TitleBar'. BindingExpression:(no path); DataItem=null; target element is 'NavigationView' (Name='RootNavigation'); target property is 'TitleBar' (type 'TitleBar')
-[02:19:16 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
-[02:19:16 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
-[02:19:16 DBG] Reading HWiNFO shared memory
+[02:38:10 DBG] SetWindowPositionRelativeToScreen targetScreen=Monitor: \\.\DISPLAY4, Bounds={Left=3840,Top=2155,Width=1920,Height=550}, WorkingArea={Left=3840,Top=2155,Width=1920,Height=550}, Primary=False
+[02:38:10 DBG] SetWindowPositionRelativeToScreen targetScreen=\\.\DISPLAY4 x=3830 y=2160
+[02:38:10 DBG] Reading HWiNFO shared memory
 [PluginUpdateNotifier] Reading config file from C:\ProgramData\InfoPanel\plugins\InfoPanel.PluginUpdateNotifier\InfoPanel.PluginUpdateNotifier.dll.ini
 [PluginUpdateNotifier] Check interval set to: 4 hours
-[02:19:16 DBG] Typeface cache miss: Arial-Normal-False-False
-[02:19:16 DBG] Typeface cache miss: Arial-Black-False-False
+[02:38:10 DBG] Typeface cache miss: Arial-Normal-False-False
+[02:38:10 DBG] Typeface cache miss: Arial-Black-False-False
 PresentMonProvider: Provider path: C:\ProgramData\InfoPanel\plugins\InfoPanel.Presentmon\PresentMonDataProvider\PresentMonDataProvider.exe
-[02:19:16 INF] Plugin Clock loaded successfully
-[02:19:17 DBG] Reading HWiNFO shared memory
-[02:19:17 INF] Plugin Drive Info loaded successfully
-[02:19:17 INF] Plugin HWiNFO Registry loaded successfully
-[02:19:17 INF] Plugin Network Info loaded successfully
-[02:19:17 INF] Plugin System Info loaded successfully
-[02:19:17 DBG] Plugin Drive Info task started
-[02:19:18 DBG] Plugin HWiNFO Registry task started
-[02:19:18 DBG] Plugin Network Info task started
-[02:19:18 DBG] Plugin System Info task started
+[02:38:10 INF] Plugin Clock loaded successfully
+[02:38:11 DBG] Reading HWiNFO shared memory
+[02:38:11 INF] Plugin Drive Info loaded successfully
+[02:38:11 INF] Plugin HWiNFO Registry loaded successfully
+[02:38:11 INF] Plugin Network Info loaded successfully
+[02:38:11 INF] Plugin System Info loaded successfully
+[02:38:12 DBG] Plugin Drive Info task started
+[02:38:12 DBG] Plugin HWiNFO Registry task started
+[02:38:12 DBG] Plugin Network Info task started
+[02:38:12 DBG] Plugin System Info task started
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[02:19:18 DBG] Reading HWiNFO shared memory
-[02:19:18 INF] Plugin Volume Info loaded successfully
-[02:19:18 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
+[02:38:13 DBG] Reading HWiNFO shared memory
+[02:38:13 INF] Plugin Volume Info loaded successfully
+[02:38:13 INF] Plugin Weather Info - OpenWeatherMap loaded successfully
 Weather Plugin: Reading INI file from C:\ProgramData\InfoPanel\plugins\InfoPanel.MetYr\InfoPanel.MetYr.dll.ini
 Weather Plugin: INI file content:
 [Yr Weather Plugin]
@@ -97,7 +97,7 @@ UtcOffsetHours = 2
 ForecastDays = 7
 TemperatureUnit = C
 IconUrl = https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-19 00:19'
+Weather Plugin: Validated format 'yyyy-MM-dd HH:mm' -> '2025-10-19 00:38'
 Weather Plugin: Validated format 'ddd d MMM' -> 'Sun 19 Oct'
 Weather Plugin: INI Latitude/Longitude invalid or missing, will use geocoding.
 Weather Plugin: Read location from INI: Brevik
@@ -109,33 +109,33 @@ Weather Plugin: Forecast days set to: 7
 Weather Plugin: Temperature unit set to: C
 Weather Plugin: Validating IconUrl: 'https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/'
 Weather Plugin: Testing custom IconUrl: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
-[02:19:18 INF] Plugin Weather Info - MET/Yr loaded successfully
-[02:19:18 INF] Plugin Plugin Update Notifier loaded successfully
+[02:38:13 INF] Plugin Weather Info - MET/Yr loaded successfully
+[02:38:13 INF] Plugin Plugin Update Notifier loaded successfully
 Initializing PresentMon FPS Plugin v2.0.0...
 Starting monitoring task...
 Plugin initialized successfully
 FPS sensors loaded into UI
-[02:19:18 INF] Plugin PresentMon FPS loaded successfully
+[02:38:13 INF] Plugin PresentMon FPS loaded successfully
 PresentMon Plugin: Monitoring loop started
-[02:19:18 INF] Plugin Spotify loaded successfully
-[02:19:18 INF] Plugins loaded in 2718ms
 Weather Plugin: Successfully accessed test SVG icon: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/clear-day.svg
-[02:19:19 DBG] Plugin Volume Info task started
-[02:19:19 DBG] Plugin Weather Info - OpenWeatherMap task started
-[02:19:19 DBG] Plugin Weather Info - MET/Yr task started
-Weather Plugin: UpdateAsync called at 2025-10-19T00:19:19Z
-[02:19:19 DBG] Plugin Plugin Update Notifier task started
+[02:38:13 INF] Plugin Spotify loaded successfully
+[02:38:13 INF] Plugins loaded in 2747ms
+[02:38:13 DBG] Plugin Volume Info task started
+[02:38:13 DBG] Plugin Weather Info - OpenWeatherMap task started
+[02:38:13 DBG] Plugin Plugin Update Notifier task started
+[02:38:13 DBG] Plugin Weather Info - MET/Yr task started
+Weather Plugin: UpdateAsync called at 2025-10-19T00:38:13Z
+[02:38:13 DBG] Plugin PresentMon FPS task started
 Weather Plugin: Geocoding URL: https://nominatim.openstreetmap.org/search?q=Brevik&format=json&limit=1
-[02:19:19 DBG] Plugin PresentMon FPS task started
-[02:19:19 DBG] Plugin Spotify task started
-Weather Plugin: Nominatim response: [{"place_id":154116111,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
+[02:38:13 DBG] Plugin Spotify task started
+Weather Plugin: Nominatim response: [{"place_id":153934922,"licence":"Data � OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"node","osm_id":52199009,"lat":"59.3474836","lon":"18.2043939","class":"place","type":"suburb","place_rank":19,"importance":0.30929013509721104,"addresstype":"suburb","name":"Brevik","display_name":"Brevik, Liding� kommun, Stockholms l�n, 181 67, Sverige","boundingbox":["59.3274836","59.3674836","18.1843939","18.2243939"]}]
 Weather Plugin: Coordinates set from Nominatim - Lat: 59.3474836, Lon: 18.2043939
 Weather Plugin: Fetching current weather: https://api.met.no/weatherapi/nowcast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-19T00:11:59Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-19T00:15:00Z","data":{"instant":{"details":{"air_temperature":1.4,"precipitation_rate":0.0,"relative_humidity":...
-Weather Plugin: Current timeseries from nowcast: 2025-10-19T00:15:00Z
+Weather Plugin: Nowcast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-19T00:32:05Z","units":{"air_temperature":"celsius","precipitation_amount":"mm","precipitation_rate":"mm/h","relative_humidity":"%","wind_from_direction":"degrees","wind_speed":"m/s","wind_speed_of_gust":"m/s"},"radar_coverage":"ok"},"timeseries":[{"time":"2025-10-19T00:35:00Z","data":{"instant":{"details":{"air_temperature":1.2,"precipitation_rate":0.0,"relative_humidity":...
+Weather Plugin: Current timeseries from nowcast: 2025-10-19T00:35:00Z
 Weather Plugin: Fetching forecast: https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=59.3475&lon=18.2044
-Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-18T23:26:09Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
-Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 10 �C / 3 �C, Precip: 0.0 mm, Wind: 3.5 m/s SW
+Weather Plugin: Forecast response (first 500 chars): {"type":"Feature","geometry":{"type":"Point","coordinates":[18.2044,59.3475,10]},"properties":{"meta":{"updated_at":"2025-10-19T00:26:28Z","units":{"air_pressure_at_sea_level":"hPa","air_temperature":"celsius","air_temperature_max":"celsius","air_temperature_min":"celsius","air_temperature_percentile_10":"celsius","air_temperature_percentile_90":"celsius","cloud_area_fraction":"%","cloud_area_fraction_high":"%","cloud_area_fraction_low":"%","cloud_area_fraction_medium":"%","dew_point_temperature...
+Weather Plugin: Added forecast row - Date: Mon 20 Oct, Weather: Cloudy, Temp: 10 �C / 3 �C, Precip: 0.0 mm, Wind: 3.6 m/s SW
 Weather Plugin: Added forecast row - Date: Tue 21 Oct, Weather: Cloudy, Temp: 11 �C / 8 �C, Precip: 2.8 mm, Wind: 5.7 m/s S
 Weather Plugin: Added forecast row - Date: Wed 22 Oct, Weather: Moderate Rain, Temp: 12 �C / 10 �C, Precip: 3.6 mm, Wind: 5.1 m/s S
 Weather Plugin: Added forecast row - Date: Thu 23 Oct, Weather: Cloudy, Temp: 12 �C / 10 �C, Precip: 3.4 mm, Wind: 3.9 m/s S
@@ -146,32 +146,33 @@ Weather Plugin: Mapped symbol 'partlycloudy_night' to icon: cloudy-2-night, desc
 Weather Plugin: Using custom icon URL: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/
 Weather Plugin: Checking SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/cloudy-2-night.svg
 Weather Plugin: Using SVG: https://raw.githubusercontent.com/Makin-Things/weather-icons/refs/heads/main/static/cloudy-2-night.svg
-Weather Plugin: Set data - Temp: 1.4�C, Weather: partlycloudy, Description: Partly Cloudy, Icon: cloudy-2-night
-Weather Plugin: UTC time: 2025-10-19 00:19:19 UTC
-Weather Plugin: Adjusted time: 2025-10-19 02:19:19 (offset: 2 hours)
-Weather Plugin: Last refreshed set to: 2025-10-19 02:19
-[02:19:20 DBG] Reading HWiNFO shared memory
-[02:19:21 DBG] Reading HWiNFO shared memory
-[02:19:22 DBG] Reading HWiNFO shared memory
+Weather Plugin: Set data - Temp: 1.2�C, Weather: partlycloudy, Description: Partly Cloudy, Icon: cloudy-2-night
+Weather Plugin: UTC time: 2025-10-19 00:38:13 UTC
+Weather Plugin: Adjusted time: 2025-10-19 02:38:13 (offset: 2 hours)
+Weather Plugin: Last refreshed set to: 2025-10-19 02:38
+[02:38:14 DBG] Reading HWiNFO shared memory
+[02:38:15 DBG] Reading HWiNFO shared memory
+[02:38:16 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[02:19:24 DBG] Reading HWiNFO shared memory
-[02:19:25 DBG] Reading HWiNFO shared memory
-[02:19:25 INF] LibreHardwareMonitor computer opened in 9529ms
-[02:19:26 DBG] Reading HWiNFO shared memory
-[02:19:27 DBG] Reading HWiNFO shared memory
+[02:38:18 DBG] Reading HWiNFO shared memory
+[02:38:19 DBG] Reading HWiNFO shared memory
+[02:38:19 INF] LibreHardwareMonitor computer opened in 9548ms
+[02:38:20 DBG] Reading HWiNFO shared memory
+[02:38:22 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-[02:19:29 DBG] Reading HWiNFO shared memory
-[02:19:30 DBG] Reading HWiNFO shared memory
-[02:19:31 DBG] Reading HWiNFO shared memory
-[02:19:33 DBG] Reading HWiNFO shared memory
+[02:38:23 DBG] Reading HWiNFO shared memory
+[02:38:24 DBG] Reading HWiNFO shared memory
+[02:38:26 DBG] Reading HWiNFO shared memory
+[02:38:27 DBG] Reading HWiNFO shared memory
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-Switching to: NMS (PID: 45832)
-PresentMonProvider: Launching PresentMonDataProvider.exe with -i 45832...
-PresentMonProvider: Provider started (PID: 28344)
-[02:19:34 DBG] Reading HWiNFO shared memory
-[02:19:35 DBG] Reading HWiNFO shared memory
+[02:38:28 DBG] Reading HWiNFO shared memory
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+Switching to: NMS (PID: 27612)
+PresentMonProvider: Launching PresentMonDataProvider.exe with -i 27612...
+PresentMonProvider: Provider started (PID: 34276)
+[02:38:29 DBG] Reading HWiNFO shared memory
+[02:38:31 DBG] Reading HWiNFO shared memory
 PresentMonProvider: Provider is running
 PresentMonProvider: Polling loop started
 PresentMonProvider: Polling loop running...
@@ -207,238 +208,238 @@ PresentMonProvider: [Frame 10] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 10] EntrySize=488, Offset=32, Size=8192
 PresentMonProvider: [Frame 10] FrameCount=0, FramePos=0
 PresentMonProvider: Data is stale (FrameCount stuck at 0). Waiting for new frames...
-PresentMonProvider: New frames detected! FrameCount: 0 -> 5
-PresentMonProvider: Data is stale (FrameCount stuck at 5). Waiting for new frames...
-[02:19:37 DBG] Reading HWiNFO shared memory
+PresentMonProvider: New frames detected! FrameCount: 0 -> 7
+PresentMonProvider: Data is stale (FrameCount stuck at 7). Waiting for new frames...
 PresentMonProvider: [Frame 60] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 60] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 60] FrameCount=5, FramePos=5
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-PresentMonProvider: New frames detected! FrameCount: 5 -> 31
-PresentMonProvider: Data is stale (FrameCount stuck at 57). Waiting for new frames...
+PresentMonProvider: [Frame 60] FrameCount=7, FramePos=7
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+PresentMonProvider: New frames detected! FrameCount: 7 -> 23
+[02:38:32 DBG] Reading HWiNFO shared memory
+PresentMonProvider: Data is stale (FrameCount stuck at 51). Waiting for new frames...
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
 PresentMonProvider: [Frame 120] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 120] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 120] FrameCount=57, FramePos=57
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:38 DBG] Reading HWiNFO shared memory
-PresentMonProvider: New frames detected! FrameCount: 57 -> 80
-PresentMonProvider: Data is stale (FrameCount stuck at 102). Waiting for new frames...
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+PresentMonProvider: [Frame 120] FrameCount=51, FramePos=51
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+PresentMonProvider: New frames detected! FrameCount: 51 -> 75
+[02:38:33 DBG] Reading HWiNFO shared memory
+PresentMonProvider: Data is stale (FrameCount stuck at 132). Waiting for new frames...
 PresentMonProvider: [Frame 180] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 180] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 180] FrameCount=102, FramePos=102
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-PresentMonProvider: New frames detected! FrameCount: 102 -> 118
-[02:19:39 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 180] FrameCount=132, FramePos=132
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+PresentMonProvider: New frames detected! FrameCount: 132 -> 148
+[02:38:35 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 240] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 240] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 240] FrameCount=198, FramePos=198
+PresentMonProvider: [Frame 240] FrameCount=235, FramePos=235
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=157.2, FrameTime=6.36ms, GPU=0.66ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=153.5, FrameTime=6.52ms, GPU=0.98ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
 PresentMonProvider: [Frame 300] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 300] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 300] FrameCount=351, FramePos=351
+PresentMonProvider: [Frame 300] FrameCount=394, FramePos=394
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=147.5, FrameTime=6.78ms, GPU=0.69ms
-[02:19:40 DBG] Reading HWiNFO shared memory
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=151.6, FrameTime=6.60ms, GPU=0.71ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:36 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 360] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 360] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 360] FrameCount=501, FramePos=501
+PresentMonProvider: [Frame 360] FrameCount=544, FramePos=544
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=151.0, FrameTime=6.62ms, GPU=0.83ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:42 DBG] Reading HWiNFO shared memory
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=153.0, FrameTime=6.54ms, GPU=0.71ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:37 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 420] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 420] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 420] FrameCount=635, FramePos=635
+PresentMonProvider: [Frame 420] FrameCount=694, FramePos=694
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=153.2, FrameTime=6.53ms, GPU=0.72ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:43 DBG] Reading HWiNFO shared memory
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=164.4, FrameTime=6.08ms, GPU=0.62ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[02:38:39 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 480] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 480] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 480] FrameCount=785, FramePos=785
+PresentMonProvider: [Frame 480] FrameCount=828, FramePos=828
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=151.5, FrameTime=6.60ms, GPU=0.66ms
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=151.3, FrameTime=6.61ms, GPU=0.67ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
 PresentMonProvider: [Frame 540] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 540] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 540] FrameCount=935, FramePos=935
+PresentMonProvider: [Frame 540] FrameCount=977, FramePos=977
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=150.7, FrameTime=6.64ms, GPU=0.64ms
-[02:19:44 DBG] Reading HWiNFO shared memory
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=153.0, FrameTime=6.54ms, GPU=0.61ms
+[02:38:40 DBG] Reading HWiNFO shared memory
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
 PresentMonProvider: [Frame 600] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 600] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 600] FrameCount=1085, FramePos=1085
+PresentMonProvider: [Frame 600] FrameCount=1128, FramePos=1128
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=98.7, FrameTime=10.13ms, GPU=0.75ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:46 DBG] Reading HWiNFO shared memory
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=150.1, FrameTime=6.66ms, GPU=0.73ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+PresentMonProvider: Data is stale (FrameCount stuck at 1167). Waiting for new frames...
+PresentMonProvider: New frames detected! FrameCount: 1167 -> 1183
+[02:38:41 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 660] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 660] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 660] FrameCount=1220, FramePos=1220
+PresentMonProvider: [Frame 660] FrameCount=1263, FramePos=1263
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=159.7, FrameTime=6.26ms, GPU=0.79ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:47 DBG] Reading HWiNFO shared memory
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=148.6, FrameTime=6.73ms, GPU=0.72ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:42 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 720] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 720] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 720] FrameCount=1370, FramePos=1370
+PresentMonProvider: [Frame 720] FrameCount=1397, FramePos=1397
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=155.1, FrameTime=6.45ms, GPU=0.79ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=175.8, FrameTime=5.69ms, GPU=0.70ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
 PresentMonProvider: [Frame 780] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 780] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 780] FrameCount=1520, FramePos=1520
+PresentMonProvider: [Frame 780] FrameCount=1547, FramePos=1547
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=166.0, FrameTime=6.02ms, GPU=0.70ms
-[02:19:48 DBG] Reading HWiNFO shared memory
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=152.7, FrameTime=6.55ms, GPU=0.72ms
+[02:38:44 DBG] Reading HWiNFO shared memory
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
 PresentMonProvider: [Frame 840] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 840] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 840] FrameCount=1670, FramePos=1670
+PresentMonProvider: [Frame 840] FrameCount=1698, FramePos=1698
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=172.5, FrameTime=5.80ms, GPU=0.73ms
-[02:19:50 DBG] Reading HWiNFO shared memory
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=147.4, FrameTime=6.79ms, GPU=0.81ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:45 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 900] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 900] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 900] FrameCount=1803, FramePos=1803
+PresentMonProvider: [Frame 900] FrameCount=1830, FramePos=1830
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=152.0, FrameTime=6.58ms, GPU=0.67ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:51 DBG] Reading HWiNFO shared memory
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=159.1, FrameTime=6.28ms, GPU=0.77ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:46 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 960] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 960] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 960] FrameCount=1954, FramePos=1954
+PresentMonProvider: [Frame 960] FrameCount=1982, FramePos=1982
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=152.8, FrameTime=6.54ms, GPU=0.74ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=162.7, FrameTime=6.15ms, GPU=0.72ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
 PresentMonProvider: [Frame 1020] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1020] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1020] FrameCount=2087, FramePos=2087
+PresentMonProvider: [Frame 1020] FrameCount=2132, FramePos=2132
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=151.9, FrameTime=6.58ms, GPU=1.06ms
-[02:19:52 DBG] Reading HWiNFO shared memory
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=151.4, FrameTime=6.60ms, GPU=0.78ms
+[02:38:48 DBG] Reading HWiNFO shared memory
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
 PresentMonProvider: [Frame 1080] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1080] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1080] FrameCount=2238, FramePos=2238
+PresentMonProvider: [Frame 1080] FrameCount=2266, FramePos=2266
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=151.4, FrameTime=6.61ms, GPU=0.66ms
-[02:19:53 DBG] Reading HWiNFO shared memory
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=153.1, FrameTime=6.53ms, GPU=1.07ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:49 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1140] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1140] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1140] FrameCount=2388, FramePos=2388
+PresentMonProvider: [Frame 1140] FrameCount=2416, FramePos=2416
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=163.1, FrameTime=6.13ms, GPU=0.67ms
-Detected fullscreen window: No Man's Sky (PID: 45832, Process: NMS)
-PresentMon Plugin: Detected fullscreen - NMS (PID: 45832)
-[02:19:55 DBG] Reading HWiNFO shared memory
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=151.5, FrameTime=6.60ms, GPU=0.70ms
+Detected fullscreen window: No Man's Sky (PID: 27612, Process: NMS)
+PresentMon Plugin: Detected fullscreen - NMS (PID: 27612)
+[02:38:50 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1200] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1200] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1200] FrameCount=2538, FramePos=2538
+PresentMonProvider: [Frame 1200] FrameCount=2566, FramePos=2566
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=151.5, FrameTime=6.60ms, GPU=0.82ms
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=151.0, FrameTime=6.62ms, GPU=0.78ms
 Exception thrown: 'System.ArgumentException' in System.Diagnostics.Process.dll
-Process 45832 is no longer valid
+Process 27612 is no longer valid
+PresentMon Plugin: Sending PID 0 to reset provider buffer (RTSS mode)
+PresentMonProvider: Found existing instance, sending PID 0
 PresentMonProvider: [Frame 1260] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1260] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1260] FrameCount=2672, FramePos=2672
+PresentMonProvider: [Frame 1260] FrameCount=2697, FramePos=2697
 PresentMonProvider: Application in frame data: 'NMS.exe'
-PresentMonProvider: ProcessID=45832, msBetweenPresents=0.00ms
-PresentMonProvider: [V2 at offset 392] FPS=154.8, FrameTime=6.46ms, GPU=0.74ms
-[02:19:56 DBG] Reading HWiNFO shared memory
-PresentMonProvider: Data is stale (FrameCount stuck at 2712). Waiting for new frames...
+PresentMonProvider: ProcessID=27612, msBetweenPresents=0.00ms
+PresentMonProvider: [V2 at offset 392] FPS=152.4, FrameTime=6.56ms, GPU=0.66ms
+PresentMonProvider: Data is stale (FrameCount stuck at 2697). Waiting for new frames...
+[02:38:52 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1320] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1320] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1320] FrameCount=2712, FramePos=2712
-[02:19:57 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 1320] FrameCount=2697, FramePos=2697
+[02:38:53 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1380] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1380] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1380] FrameCount=2712, FramePos=2712
-[02:19:59 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 1380] FrameCount=2697, FramePos=2697
 Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
+[02:38:54 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1440] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1440] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1440] FrameCount=2712, FramePos=2712
-[02:20:00 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 1440] FrameCount=2697, FramePos=2697
 PresentMonProvider: [Frame 1500] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1500] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1500] FrameCount=2712, FramePos=2712
+PresentMonProvider: [Frame 1500] FrameCount=2697, FramePos=2697
+[02:38:56 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1560] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1560] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1560] FrameCount=2712, FramePos=2712
-[02:20:01 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 1560] FrameCount=2697, FramePos=2697
+[02:38:57 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1620] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1620] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1620] FrameCount=2712, FramePos=2712
-[02:20:03 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 1620] FrameCount=2697, FramePos=2697
+[02:38:58 DBG] Reading HWiNFO shared memory
 PresentMonProvider: [Frame 1680] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1680] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1680] FrameCount=2712, FramePos=2712
-[02:20:04 DBG] Reading HWiNFO shared memory
+PresentMonProvider: [Frame 1680] FrameCount=2697, FramePos=2697
+Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
 PresentMonProvider: [Frame 1740] Sig=0x504D4450, Ver=0x00020000, Status=0
 PresentMonProvider: [Frame 1740] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1740] FrameCount=2712, FramePos=2712
-Exception thrown: 'System.Net.Http.HttpRequestException' in System.Private.CoreLib.dll
-PresentMonProvider: [Frame 1800] Sig=0x504D4450, Ver=0x00020000, Status=0
-PresentMonProvider: [Frame 1800] EntrySize=488, Offset=32, Size=8192
-PresentMonProvider: [Frame 1800] FrameCount=2712, FramePos=2712
-[02:20:05 DBG] BeadaPanelTask stopping
-[02:20:05 DBG] TuringPanelTask stopping
-[02:20:05 DBG] LibreMonitor stopping
-[02:20:05 DBG] LibreMonitor task cancelled
-[02:20:05 DBG] Reading HWiNFO shared memory
-[02:20:05 DBG] Disposing resources for LibreMonitor
-[02:20:05 DBG] LibreMonitor stopped
-[02:20:05 DBG] PluginMonitor stopping
-[02:20:05 DBG] PluginMonitor task cancelled
-[02:20:05 DBG] Disposing resources for PluginMonitor
-[02:20:05 DBG] PluginMonitor stopped
+PresentMonProvider: [Frame 1740] FrameCount=2697, FramePos=2697
+[02:38:59 DBG] BeadaPanelTask stopping
+[02:38:59 DBG] TuringPanelTask stopping
+[02:38:59 DBG] LibreMonitor stopping
+[02:38:59 DBG] LibreMonitor task cancelled
+[02:38:59 DBG] Disposing resources for LibreMonitor
+[02:38:59 DBG] LibreMonitor stopped
+[02:38:59 DBG] PluginMonitor stopping
+[02:38:59 DBG] PluginMonitor task cancelled
+[02:38:59 DBG] Disposing resources for PluginMonitor
+[02:38:59 DBG] PluginMonitor stopped
+[02:38:59 DBG] Reading HWiNFO shared memory
    Info: AppDomain process exited: Disposing SDK.
    Info: Disposing the Hub.
   Debug: Successfully flushed all events up to call to FlushAsync.
-The program '[37332] InfoPanel.exe' has exited with code 0 (0x0).
+The program '[6708] InfoPanel.exe' has exited with code 0 (0x0).

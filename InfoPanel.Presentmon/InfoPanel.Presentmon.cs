@@ -80,7 +80,15 @@ namespace InfoPanel.Presentmon
                         if (!isValid)
                         {
                             Console.WriteLine($"Process {_currentState.ProcessId} is no longer valid");
-                            // Don't stop provider - let it keep running for next process
+                            
+                            // Send PID=0 to trigger RTSS mode, which resets buffer and waits for next game
+                            // Provider will call StopConsoleStreaming() -> ResetFrameData() to clear dwFrameCount/dwFramePos
+                            Console.WriteLine("PresentMon Plugin: Sending PID 0 to reset provider buffer (RTSS mode)");
+                            await _presentMonProviderService.StartMonitoringAsync(0);
+                            
+                            // Give provider time to process the message and reset (provider sleeps 100ms between loops)
+                            await Task.Delay(200, cancellationToken);
+                            
                             _currentState.IsMonitoring = false;
                             _windowTitle.Value = "Nothing to capture";
                             ResetSensors();
