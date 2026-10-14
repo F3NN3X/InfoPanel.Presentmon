@@ -57,7 +57,7 @@
   </Target>
 
   <!-- Copy to InfoPanel debug directory -->
-  <Target Name="CopyToInfoPanel" AfterTargets="MoveDependencyFiles" Condition="'$(Configuration)' == 'Debug'">
+  <Target Name="CopyToInfoPanel" AfterTargets="MoveDependencyFiles" Condition="'$(Configuration)' == 'Debug' and '$(CI)' != 'true'">
     <PropertyGroup>
       <InfoPanelDebugDir>E:\GitHub\PublicRepos\infopanel\InfoPanel\bin\x64\Debug\net8.0-windows10.0.19041.0\win-x64</InfoPanelDebugDir>
     </PropertyGroup>
@@ -111,10 +111,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="E:\GitHub\PublicRepos\infopanel\InfoPanel.Plugins\InfoPanel.Plugins.csproj">
-      <Private>false</Private>
-      <ExcludeAssets>runtime</ExcludeAssets>
-    </ProjectReference>
+    <Reference Include="InfoPanel.Plugins">
+      <HintPath>..\Libs\InfoPanel.Plugins.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
