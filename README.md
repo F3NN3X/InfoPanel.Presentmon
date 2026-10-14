@@ -80,6 +80,13 @@ If problems persist, please open a GitHub Issue with:
 - Description of the application you're trying to monitor
 - Your Windows version and system specifications
 
+## Releasing
+
+1. Bump `<Version>` in `InfoPanel.Presentmon/InfoPanel.Presentmon.csproj` and `Version` in `PluginInfo.ini`, and add a `CHANGELOG.md` entry for the new version.
+2. Commit, then push a tag: `git tag vX.Y.Z && git push origin vX.Y.Z`.
+
+The `Release Build` workflow builds the plugin, checks the tag matches the csproj version, and publishes the zip as a GitHub release. The plugin API comes from the committed `Libs/InfoPanel.Plugins.dll`, so no local InfoPanel checkout is needed.
+
 ## Contributing
 
 Found a bug or have a feature idea? Open an [issue](https://github.com/F3NN3X/InfoPanel.Presentmon/issues) or submit a [pull request](https://github.com/F3NN3X/InfoPanel.Presentmon/pulls) on the repository!
